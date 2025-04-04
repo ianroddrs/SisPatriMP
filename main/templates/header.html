@@ -1,29 +1,52 @@
 {% load static %}
 
-<header class="bg-dark sticky-top px-3">
-    <nav class="navbar navbar-expand-lg" data-bs-theme="dark">
+<header class="bg-light border sticky-top px-3">
+      <nav class="navbar navbar-expand-md">
         <div class="container-fluid">
-          <a class="navbar-brand d-flex align-items-center" href="#">
+          <a class="navbar-brand" href="#">
             <div class="d-inline-block align-text-top">
-              <i class="bi bi-pc-display"></i>
+              <i class="bi bi-box-fill"></i>
             </div>
-            <span class="ms-3">SisPatriMP</span>
+            <span class="ms-2 fw-bold text-uppercase">SisPatri<span class="text-danger">MP</span></span>
           </a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-              <li class="nav-item mx-2">
-                <a class="nav-link" aria-current="page" href="#"><i class="fas fa-envelope"></i></a>
-              </li>
-              <li class="nav-item mx-2">
-                <a class="nav-link" aria-current="page" href="#"><i class="fas fa-bell"></i></a>
-              </li>
-              <li class="nav-item mx-2">
-                <a class="nav-link" aria-current="page" href="#"><i class="fas fa-user"></i></a>
-              </li>
-            </ul>
+          <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header">
+              <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body d-flex flex-column justify-content-between">
+              <div class="d-md-none">
+                {% include 'aside.html' %}
+              </div>
+              <ul class="nav ms-md-auto justify-content-center">
+                <li class="nav-item dropdown">
+                  <button type="button" class="btn btn-light rounded-pill p-0 border pe-3" type="button" data-bs-toggle="dropdown" aria-expanded="false" >
+                    <div class="d-flex">
+                      <div class="flex-shrink-0">
+                        <img src="{% static 'media/profile.png' %}" width="40">
+                      </div>
+                      <div class="flex-grow-1 ms-1 small text-start">
+                        <div class="fw-bold">ianrodrigues</div>
+                        <div class="lh-1 text-muted" style="font-size: 0.85em;">Administrador</div>
+                      </div>
+                    </div>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="#">Action</a></li>
+                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                  </ul>
+                </li>
+                <li class="nav-item">
+                  <button type="button" class="btn btn-light rounded-circle">
+                    <i class="bi bi-bell-fill"></i>
+                  </button>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </nav>

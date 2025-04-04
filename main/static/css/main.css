@@ -1,0 +1,20 @@
+:root {
+    --danger: rgb(220 53 69);
+}
+
+aside{
+    width: 250px;
+}
+
+a.aside-option{
+    text-decoration: none;
+    padding: 10px 20px;
+    display: block;
+    transition: all 0.10s;
+    cursor: pointer;
+}
+
+a.aside-option:hover{
+    border-left: 5px solid var(--danger);
+    background-color: #f0f0f1;
+}
