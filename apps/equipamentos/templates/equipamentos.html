@@ -1,0 +1,55 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<article class="container-fluid">
+  <h1 class="mb-0 pt-3">Equipamentos</h1>
+  <hr>
+</article>
+
+<article class="container-fluid">
+  <div class="py-4">
+    <button type="button" class="btn btn-primary rounded-0">
+      Adicionar <i class="bi bi-plus-lg"></i>
+    </button>
+  </div>
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Polo</th>
+          <th scope="col">Cidade</th>
+          <th scope="col">Local</th>
+          <th scope="col">Tipo</th>
+          <th scope="col">Patrimônio</th>
+          <th scope="col">Nome</th>
+          <th scope="col">Domínio</th>
+          <th scope="col">Fabrincante</th>
+          <th scope="col">MAC</th>
+          <th scope="col">Observação</th>
+          <th scope="col">Última Movimentação</th>
+        </tr>
+      </thead>
+      <tbody>
+          {% for equipamento in equipamentos %}
+          <tr>
+            <th scope="row">{{forloop.counter}}</th>
+            <td>{{ equipamento.local.cidade.polo }}</td>
+            <td>{{ equipamento.local.cidade.nome }}</td>
+            <td>{{ equipamento.local.nome }}</td>
+            <td>{{ equipamento.tipo }}</td>
+            <td>{{ equipamento.patrimonio }}</td>
+            <td>{{ equipamento.nome }}</td>
+            <td>{{ equipamento.dominio }}</td>
+            <td>{{ equipamento.fabricante }}</td>
+            <td>{{ equipamento.mac }}</td>
+            <td>{{ equipamento.observacao }}</td>
+            <td>{{equipamento.historico_movimentacao.all.last.data_movimentacao|date:"d/m/Y H:s" }}</td>
+          </tr>
+          {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</article>
+
+{% endblock %}

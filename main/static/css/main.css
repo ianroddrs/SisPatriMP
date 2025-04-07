@@ -3,18 +3,19 @@
 }
 
 aside{
-    width: 250px;
+    min-width: 250px;
 }
 
 a.aside-option{
     text-decoration: none;
-    padding: 10px 20px;
+    padding: 10px 30px;
     display: block;
     transition: all 0.10s;
     cursor: pointer;
 }
 
-a.aside-option:hover{
+a.aside-option:hover,
+a.aside-option.active{
     border-left: 5px solid var(--danger);
     background-color: #f0f0f1;
 }

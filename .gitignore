@@ -4,3 +4,5 @@ core/.env
 core/__pycache__/
 main/__pycache__/
 main/migrations/
+apps/equipamentos/__pycache__/
+apps/equipamentos/migrations/
