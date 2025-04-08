@@ -20,14 +20,21 @@
     <!-- BOOTSTRAP_ICONS -->
     <link rel="stylesheet" href="{% static 'bootstrap-icons/font/bootstrap-icons.min.css' %}">
     
+    <!-- TOM SELECT -->
+    <script src="{% static 'tom-select/tom-select.base.js' %}" defer></script>
+
+    {% block static %}{% endblock %}
 </head>
 <body class="d-flex flex-column h-100 bg-dark">
     {% include 'header.html' %}
     <main class="d-flex flex-grow-1 flex-shrink-0">
-        <aside class="bg-white border border-start-0 pt-5 d-none d-md-block">    
+        <aside class="bg-white border-end border-2 pt-5 d-none d-md-block">    
             {% include 'aside.html' %}
         </aside>
-        <section class="col bg-secondary-subtle">
+        <section class="bg-white flex-shrink-0 flex-grow-1" id="main-container">
+            <nav class="bg-light border-bottom border-2">
+                teste
+            </nav>
             {% block content %}{% endblock %}
         </section>
     </main>

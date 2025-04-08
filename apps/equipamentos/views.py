@@ -1,13 +1,13 @@
 from django.shortcuts import render
-from .models import Equipamento, TipoEquipamento
+from .models import Equipamento, TipoEquipamento, FabricanteEquipamento
 from main.models import Polo, Cidade, Local, HistoricoMovimentacao
 
 def equipamentos(request):
     equipamentos = Equipamento.objects.select_related(
-        'local', 'local__cidade', 'local__cidade__polo', 'tipo'
+        'local', 'local__cidade', 'local__cidade__polo', 'tipo', 'fabricante'
     ).prefetch_related('historico_movimentacao')
     
-    print(equipamentos[0].historico_movimentacao.all())
+    # print(equipamentos[0].historico_movimentacao.all())
     
     # inserir_equipamento()
     
@@ -27,16 +27,18 @@ def inserir_equipamento():
     local, _ = Local.objects.get_or_create(nome="Sala Exemplo", cidade=cidade)
     
     # Cria ou obtém o Tipo de Equipamento
-    tipo_equipamento, _ = TipoEquipamento.objects.get_or_create(descricao="Tipo Exemplo")
+    tipo_equipamento, _ = TipoEquipamento.objects.get_or_create(tipo="Tipo Exemplo")
+    
+    fabricante, _ = FabricanteEquipamento.objects.get_or_create(fabricante="fabricante Exemplo")
     
     # Cria o Equipamento com os dados informados
     equipamento = Equipamento.objects.create(
         local=local,
         tipo=tipo_equipamento,
-        nome="Nome Exemplo",
-        dominio="DOMINIO.EXEMPLO",
+        fabricante=fabricante,
+        nome_equipamento="Nome Exemplo",
+        descricao="exemplo do descrição",
         mac="00:11:22:33:44:55",  # Formato padrão MAC
-        fabricante="Fabricante Exemplo",
         patrimonio="12345",
         observacao="Equipamento inserido inicialmente."
     )

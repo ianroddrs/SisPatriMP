@@ -1,17 +1,13 @@
 {% extends 'main.html' %}
+{% load static %}
+
+{% block static %}
+<script src="{% static 'js/equipamentos.js' %}" defer></script>
+{% endblock %}
 
 {% block content %}
-<article class="container-fluid">
-  <h1 class="mb-0 pt-3">Equipamentos</h1>
-  <hr>
-</article>
 
-<article class="container-fluid">
-  <div class="py-4">
-    <button type="button" class="btn btn-primary rounded-0">
-      Adicionar <i class="bi bi-plus-lg"></i>
-    </button>
-  </div>
+<article>
   <div class="table-responsive">
     <table class="table">
       <thead>
@@ -22,8 +18,8 @@
           <th scope="col">Local</th>
           <th scope="col">Tipo</th>
           <th scope="col">Patrimônio</th>
-          <th scope="col">Nome</th>
-          <th scope="col">Domínio</th>
+          <th scope="col">Nome Equipamento</th>
+          <th scope="col">Descrição</th>
           <th scope="col">Fabrincante</th>
           <th scope="col">MAC</th>
           <th scope="col">Observação</th>
@@ -39,8 +35,8 @@
             <td>{{ equipamento.local.nome }}</td>
             <td>{{ equipamento.tipo }}</td>
             <td>{{ equipamento.patrimonio }}</td>
-            <td>{{ equipamento.nome }}</td>
-            <td>{{ equipamento.dominio }}</td>
+            <td>{{ equipamento.nome_equipamento }}</td>
+            <td>{{ equipamento.descricao }}</td>
             <td>{{ equipamento.fabricante }}</td>
             <td>{{ equipamento.mac }}</td>
             <td>{{ equipamento.observacao }}</td>
@@ -51,5 +47,7 @@
     </table>
   </div>
 </article>
+
+
 
 {% endblock %}
