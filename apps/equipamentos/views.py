@@ -3,9 +3,15 @@ from .models import Equipamento, TipoEquipamento, FabricanteEquipamento
 from main.models import Polo, Cidade, Local, HistoricoMovimentacao
 
 def equipamentos(request):
-    equipamentos = Equipamento.objects.select_related(
+    equipamentos = list(Equipamento.objects.select_related(
         'local', 'local__cidade', 'local__cidade__polo', 'tipo', 'fabricante'
-    ).prefetch_related('historico_movimentacao')
+    ).prefetch_related('historico_movimentacao'))
+    
+    for i in range(50):
+        e = equipamentos[0]
+        equipamentos.append(e)
+    
+    
     
     # print(equipamentos[0].historico_movimentacao.all())
     

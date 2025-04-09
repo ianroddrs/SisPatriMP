@@ -2,6 +2,23 @@
     --danger: rgb(220 53 69);
 }
 
+#main-container{
+    overflow-y: auto;
+    height: calc(100vh - 59px);
+}
+
+@media (max-width:767.9px) {
+    #main-container{
+        min-width: 100vw;
+    }
+}
+
+@media (min-width:768px) {
+    #main-container{
+        min-width: calc(100vw - 250px);
+    }
+}
+
 aside{
     min-width: 250px;
 }
@@ -18,4 +35,34 @@ a.aside-option:hover,
 a.aside-option.active{
     border-left: 5px solid var(--danger);
     background-color: #f0f0f1;
+}
+
+#loading{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    backdrop-filter: blur(4);
+    background-color: #1e263081;
+}
+
+/* BARRA DE ROLAGEM */
+
+::-webkit-scrollbar {
+    width: 0.5em;
+    height: 0.6em;
+}
+
+::-webkit-scrollbar-track {
+    background-color: #f5f5f5;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 25px;
+    background-color: rgb(227, 227, 227);
 }
