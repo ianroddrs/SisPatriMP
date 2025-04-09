@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
 from .models import Equipamento, TipoEquipamento, FabricanteEquipamento
 from main.models import Polo, Cidade, Local, HistoricoMovimentacao
 
@@ -11,51 +11,41 @@ def equipamentos(request):
         e = equipamentos[0]
         equipamentos.append(e)
     
-    
-    
-    # print(equipamentos[0].historico_movimentacao.all())
-    
-    # inserir_equipamento()
-    
     context = {
         'equipamentos': equipamentos
     }
     return render(request, 'equipamentos.html', context)
 
-def inserir_equipamento():
-    # Cria ou obtém o Polo
-    polo, _ = Polo.objects.get_or_create(nome="Polo Exemplo")
+def inserir_equipamento(request):
+    if request.GET:
+        polo, _ = Polo.objects.get_or_create(nome=request.GET.get('polo'))
+        
+        cidade, _ = Cidade.objects.get_or_create(nome=request.GET.get('cidade'), polo=polo)
+        
+        local, _ = Local.objects.get_or_create(nome=request.GET.get('local'), cidade=cidade)
+        
+        tipo_equipamento, _ = TipoEquipamento.objects.get_or_create(tipo=request.GET.get('tipo'))
+        
+        fabricante, _ = FabricanteEquipamento.objects.get_or_create(fabricante=request.GET.get('fabricante'))
+        
+        equipamento = Equipamento.objects.create(
+            local=local,
+            tipo=tipo_equipamento,
+            fabricante=fabricante,
+            nome_equipamento=request.GET.get('nome'),
+            descricao=request.GET.get('descricao'),
+            mac=request.GET.get('mac'),
+            patrimonio=request.GET.get('patrimonio'),
+            observacao=request.GET.get('observacao')
+        )
+        
+        HistoricoMovimentacao.objects.create(
+            equipamento=equipamento,
+            local_origem=None,
+            local_destino=local,
+            observacao="Cadastro inicial"
+        )
     
-    # Cria ou obtém a Cidade vinculada ao Polo
-    cidade, _ = Cidade.objects.get_or_create(nome="Cidade Exemplo", polo=polo)
+    return HttpResponse({})
     
-    # Cria ou obtém o Local vinculado à Cidade
-    local, _ = Local.objects.get_or_create(nome="Sala Exemplo", cidade=cidade)
-    
-    # Cria ou obtém o Tipo de Equipamento
-    tipo_equipamento, _ = TipoEquipamento.objects.get_or_create(tipo="Tipo Exemplo")
-    
-    fabricante, _ = FabricanteEquipamento.objects.get_or_create(fabricante="fabricante Exemplo")
-    
-    # Cria o Equipamento com os dados informados
-    equipamento = Equipamento.objects.create(
-        local=local,
-        tipo=tipo_equipamento,
-        fabricante=fabricante,
-        nome_equipamento="Nome Exemplo",
-        descricao="exemplo do descrição",
-        mac="00:11:22:33:44:55",  # Formato padrão MAC
-        patrimonio="12345",
-        observacao="Equipamento inserido inicialmente."
-    )
-    
-    # Registra um histórico de movimentação para o equipamento recém-criado
-    HistoricoMovimentacao.objects.create(
-        equipamento=equipamento,
-        local_origem=None,      # Sem local de origem para a inserção inicial
-        local_destino=local,
-        observacao="Inserção inicial do equipamento."
-    )
-    
-    print("Equipamento inserido com sucesso:", equipamento)
 
