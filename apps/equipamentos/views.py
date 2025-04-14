@@ -1,19 +1,16 @@
 from django.shortcuts import render, HttpResponse
 from .models import Equipamento, TipoEquipamento, FabricanteEquipamento
-from main.models import Polo, Cidade, Local, HistoricoMovimentacao
+from apps.localidades.models import Polo, Cidade, Local, HistoricoMovimentacao
 
 def equipamentos(request):
-    equipamentos = list(Equipamento.objects.select_related(
+    equipamentos = Equipamento.objects.select_related(
         'local', 'local__cidade', 'local__cidade__polo', 'tipo', 'fabricante'
-    ).prefetch_related('historico_movimentacao'))
-    
-    for i in range(50):
-        e = equipamentos[0]
-        equipamentos.append(e)
+    ).prefetch_related('historico_movimentacao')
     
     context = {
         'equipamentos': equipamentos
     }
+    print(request)
     return render(request, 'equipamentos.html', context)
 
 def inserir_equipamento(request):

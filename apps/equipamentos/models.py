@@ -13,7 +13,7 @@ class FabricanteEquipamento(models.Model):
         return self.fabricante
 
 class Equipamento(models.Model):
-    local = models.ForeignKey('main.local', on_delete=models.CASCADE, related_name='equipamentos')
+    local = models.ForeignKey('localidades.local', on_delete=models.CASCADE, related_name='equipamentos')
     tipo = models.ForeignKey('equipamentos.tipoequipamento', on_delete=models.CASCADE, related_name='equipamentos')
     nome_equipamento = models.CharField(max_length=100, unique=True)
     descricao = models.CharField(max_length=100, blank=True, null=True)

@@ -1,26 +1,20 @@
-<form class="row">
+<form class="row" action="/equipamentos/">
     
     <div class="col-md-6 col-12 order-2">
 
       <div class="mb-3">
         <label for="polo" class="form-label">Polo</label>
-        <select class="form-select" id="polo" name="polo">
-          <option selected disabled>Selecione o polo</option>
-        </select>
+        <select id="polo" name="polo"></select>
       </div>
 
       <div class="mb-3">
         <label for="cidade" class="form-label">Cidade</label>
-        <select class="form-select" id="cidade" name="cidade">
-          <option selected disabled>Selecione a cidade</option>
-        </select>
+        <select id="cidade" name="cidade"></select>
       </div>
 
       <div class="mb-3">
         <label for="local" class="form-label">Local</label>
-        <select class="form-select" id="local" name="local">
-          <option selected disabled>Selecione o local</option>
-        </select>
+        <select id="local" name="local"></select>
       </div>
 
       <div class="mb-3">
@@ -31,12 +25,15 @@
     </div>
 
     <div class="col-md-6 col-12 order-1">
+      
+      <div class="mb-3">
+        <label for="tipoEquipamento" class="form-label">Tipo de Equipamento</label>
+        <select id="tipoEquipamento" name="tipoEquipamento"></select>
+      </div>
 
       <div class="mb-3">
         <label for="fabricante" class="form-label">Fabricante</label>
-        <select class="form-select" id="fabricante" name="fabricante">
-          <option selected disabled>Selecione o fabricante</option>
-        </select>
+        <select id="fabricante" name="fabricante"></select>
       </div>
 
       <div class="mb-3">
@@ -44,12 +41,6 @@
         <input type="text" class="form-control" id="patrimonio" name="patrimonio" placeholder="Número do patrimônio">
       </div>
 
-      <div class="mb-3">
-        <label for="tipoEquipamento" class="form-label">Tipo de Equipamento</label>
-        <select class="form-select" id="tipoEquipamento" name="tipoEquipamento">
-          <option selected disabled>Selecione o tipo</option>
-        </select>
-      </div>
 
       <div class="mb-3">
         <label for="nome" class="form-label">Nome</label>
@@ -57,8 +48,8 @@
       </div>
 
       <div class="mb-3">
-        <label for="dominio" class="form-label">Domínio</label>
-        <input type="text" class="form-control" id="dominio" name="dominio" placeholder="Digite o domínio">
+        <label for="descricao" class="form-label">Descrição</label>
+        <input type="text" class="form-control" id="descricao" name="descricao" placeholder="Digite a descrição">
       </div>
 
       <div class="mb-3">

@@ -8,6 +8,25 @@
 {% block content %}
 
 <article class="container-fluid">
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-form">Adicionar</button>
+
+  <div class="modal fade" id="modal-form">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="titutlo-modal">Cadastrar equipamento</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+          <button type="button" class="btn btn-primary" onclick="enviarDados()">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
 
   <ul class="nav nav-tabs mt-3">
     <li class="nav-item">
