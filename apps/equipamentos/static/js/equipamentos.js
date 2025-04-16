@@ -14,6 +14,7 @@ if(modal){
 
         modalBody.querySelectorAll('select').forEach(select => {
             new TomSelect(select, {
+                placeholder: `Selecione uma opção`,
                 create: true,
                 createOnBlur: true,     
                 render: {

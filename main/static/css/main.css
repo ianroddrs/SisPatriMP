@@ -92,3 +92,7 @@ div.ts-control{
     outline: 0;
     box-shadow: 0 0 0 .25rem rgba(13, 110, 253, .25);
 }
+
+.ts-control input{
+    width: 100%;
+}
