@@ -6,9 +6,12 @@ def home(request):
     return render(request, "home.html", context ={})
 
 def api_localidades(request):
-    polos = list(Polo.objects.all().values())
-    cidades = list(Cidade.objects.all().values())
-    locais = list(Local.objects.all().values())
+    # polos = list(Polo.objects.all().values())
+    # cidades = list(Cidade.objects.all().values())
+    # locais = list(Local.objects.all().values())
+    polos = ['I', 'II', 'III']
+    cidades = ['Ananindeua', 'Benevides','Marituba']
+    locais = ['sala01', 'sala02', 'sala03']
     
     context = {
         'polos': polos,
