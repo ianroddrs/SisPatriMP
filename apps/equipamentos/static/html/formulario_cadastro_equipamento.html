@@ -4,26 +4,23 @@
 
       <div class="mb-3">
         <label for="polo" class="form-label">Polo</label>
-        <input class="form-control" list="polos" required id="polo" name="polo" placeholder="Selecione o polo">
-        <datalist id="polos">
-
-        </datalist>
+        <select class="form-select" required id="polos" name="polo">
+          <option value="null" selected disabled>Selecione o polo</option>
+        </select>
       </div>
 
       <div class="mb-3">
         <label for="cidade" class="form-label">Cidade</label>
-        <input class="form-control" list="cidades" required id="cidade" name="cidade" placeholder="Selecione a cidade">
-        <datalist id="cidades">
-
-        </datalist>
+        <select class="form-select" required id="cidades" name="cidade">
+          <option value="null" selected disabled>Selecione a cidade</option>
+        </select>
       </div>
 
       <div class="mb-3">
         <label for="local" class="form-label">Local</label>
-        <input class="form-control" list="locais" required id="local" name="local" placeholder="Selecione o local">
-        <datalist id="locais">
-
-        </datalist>
+        <select class="form-select" required id="locais" name="local">
+          <option value="null" selected disabled>Selecione o local</option>
+        </select>
       </div>
 
       <div class="mb-3">
@@ -37,18 +34,16 @@
       
       <div class="mb-3">
         <label for="tipoEquipamento" class="form-label">Tipo de Equipamento</label>
-        <input class="form-control" list="tipoEquipamentos" required id="tipoEquipamento" name="tipoEquipamento" placeholder="Selecione o tipo do equipamento">
-        <datalist id="tipoEquipamentos">
-
-        </datalist>
+        <select class="form-select" required id="tipo_equipamentos" name="tipo_equipamento">
+          <option value="null" selected disabled>Selecione o tipo de equipamento</option>
+        </select>
       </div>
 
       <div class="mb-3">
         <label for="fabricante" class="form-label">Fabricante</label>
-        <input class="form-control" list="fabricantes" required id="fabricante" name="fabricante" placeholder="Selecione o fabricante">
-        <datalist id="fabricantes">
-
-        </datalist>
+        <select class="form-select" required id="fabricantes" name="fabricante">
+          <option value="null" selected disabled>Selecione o fabricante</option>
+        </select>
       </div>
 
       <div class="mb-3">
@@ -63,14 +58,15 @@
       </div>
 
       <div class="mb-3">
+        <label for="mac" class="form-label">MAC</label>
+        <input required type="text" class="form-control" id="mac" name="mac" placeholder="Endereço MAC">
+      </div>
+
+      <div class="mb-3">
         <label for="descricao" class="form-label">Descrição</label>
         <input type="text" class="form-control" id="descricao" name="descricao" placeholder="Digite a descrição">
       </div>
 
-      <div class="mb-3">
-        <label for="mac" class="form-label">MAC</label>
-        <input required type="text" class="form-control" id="mac" name="mac" placeholder="Endereço MAC">
-      </div>
 
     </div>
 </form>

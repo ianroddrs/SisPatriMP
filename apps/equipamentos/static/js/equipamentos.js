@@ -12,21 +12,22 @@ if(modal){
         modalBody.innerHTML = formulario
 
         try {
-            let response = await fetch('/api/localidades');
+            let response = await fetch('/api/datalists');
             let json = await response.json();
             localidades = json;
 
-            modalBody.querySelectorAll('datalist').forEach(datalist => {
-                let options_list = localidades[datalist.id]
-                let opt = document.createElement('option')
-
+            Object.keys(localidades).forEach(id => {
+                let datalist = modalBody.querySelector(`#${id}`)
+                let options_list = localidades[id]
+                
                 options_list.forEach(item =>{
-                    console.log(item)
-                    opt.value = item
+                    let opt = document.createElement('option')
+                    opt.value = item.toUpperCase()
+                    opt.textContent = item.toUpperCase()
+                    datalist.appendChild(opt)
                 })
-
-                // datalist.appendChild(opt)
             })
+            
 
           } catch (error) {
             console.error('Fetch error:', error);
@@ -41,7 +42,7 @@ async function enviarDados() {
     let submit = true
 
     inputs.forEach(input => {
-        if(input.required && (!input.value || input.value == "Selecione uma opção")){
+        if(input.required && (!input.value || input.value == "null")){
             input.classList.add('is-invalid')
             submit = false
         }
