@@ -1,25 +1,25 @@
-<form class="row" action="/equipamentos/">
+<form class="row" action="/equipamentos/inserir_equipamento">
     
     <div class="col-lg-6 col-12 order-2">
 
       <div class="mb-3">
         <label for="polo" class="form-label">Polo</label>
         <select class="form-select" required id="polos" name="polo">
-          <option value="null" selected disabled>Selecione o polo</option>
+          <option value="null" selected>Selecione o polo</option>
         </select>
       </div>
 
       <div class="mb-3">
         <label for="cidade" class="form-label">Cidade</label>
         <select class="form-select" required id="cidades" name="cidade">
-          <option value="null" selected disabled>Selecione a cidade</option>
+          <option value="null" selected>Selecione a cidade</option>
         </select>
       </div>
 
       <div class="mb-3">
         <label for="local" class="form-label">Local</label>
         <select class="form-select" required id="locais" name="local">
-          <option value="null" selected disabled>Selecione o local</option>
+          <option value="null" selected>Selecione o local</option>
         </select>
       </div>
 
@@ -35,36 +35,36 @@
       <div class="mb-3">
         <label for="tipoEquipamento" class="form-label">Tipo de Equipamento</label>
         <select class="form-select" required id="tipo_equipamentos" name="tipo_equipamento">
-          <option value="null" selected disabled>Selecione o tipo de equipamento</option>
+          <option value="null" selected>Selecione o tipo de equipamento</option>
         </select>
       </div>
 
       <div class="mb-3">
         <label for="fabricante" class="form-label">Fabricante</label>
         <select class="form-select" required id="fabricantes" name="fabricante">
-          <option value="null" selected disabled>Selecione o fabricante</option>
+          <option value="null" selected>Selecione o fabricante</option>
         </select>
       </div>
 
       <div class="mb-3">
         <label for="patrimonio" class="form-label">Patrimônio</label>
-        <input required type="text" class="form-control" id="patrimonio" name="patrimonio" placeholder="Número do patrimônio">
+        <input autocomplete="off"required type="text" class="form-control" id="patrimonio" name="patrimonio" placeholder="Número do patrimônio">
       </div>
 
 
       <div class="mb-3">
         <label for="nome" class="form-label">Nome</label>
-        <input required type="text" class="form-control" id="nome" name="nome" placeholder="Digite o nome do equipamento">
+        <input autocomplete="off"required type="text" class="form-control" id="nome" name="nome" placeholder="Digite o nome do equipamento">
       </div>
 
       <div class="mb-3">
         <label for="mac" class="form-label">MAC</label>
-        <input required type="text" class="form-control" id="mac" name="mac" placeholder="Endereço MAC">
+        <input autocomplete="off"required type="text" class="form-control" id="mac" name="mac" placeholder="Endereço MAC">
       </div>
 
       <div class="mb-3">
         <label for="descricao" class="form-label">Descrição</label>
-        <input type="text" class="form-control" id="descricao" name="descricao" placeholder="Digite a descrição">
+        <input autocomplete="off"type="text" class="form-control" id="descricao" name="descricao" placeholder="Digite a descrição">
       </div>
 
 

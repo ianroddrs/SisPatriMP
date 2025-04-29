@@ -1,4 +1,5 @@
 from django.shortcuts import render, HttpResponse
+from django.http import JsonResponse
 from .models import Equipamento, TipoEquipamento, FabricanteEquipamento
 from apps.localidades.models import Polo, Cidade, Local, HistoricoMovimentacao
 
@@ -21,7 +22,7 @@ def inserir_equipamento(request):
         
         local, _ = Local.objects.get_or_create(nome=request.GET.get('local'), cidade=cidade)
         
-        tipo_equipamento, _ = TipoEquipamento.objects.get_or_create(tipo=request.GET.get('tipo'))
+        tipo_equipamento, _ = TipoEquipamento.objects.get_or_create(tipo=request.GET.get('tipo_equipamento'))
         
         fabricante, _ = FabricanteEquipamento.objects.get_or_create(fabricante=request.GET.get('fabricante'))
         
@@ -43,6 +44,6 @@ def inserir_equipamento(request):
             observacao="Cadastro inicial"
         )
     
-    return HttpResponse({})
+    return JsonResponse({})
     
 
