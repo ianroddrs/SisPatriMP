@@ -4,14 +4,14 @@ from .models import Equipamento, TipoEquipamento, FabricanteEquipamento
 from apps.localidades.models import Polo, Cidade, Local, HistoricoMovimentacao
 
 def equipamentos(request):
-    equipamentos = Equipamento.objects.select_related(
-        'local', 'local__cidade', 'local__cidade__polo', 'tipo', 'fabricante'
-    ).prefetch_related('historico_movimentacao')
-    
+    localidades = Local.objects.select_related()
+    equipamentos = Equipamento.objects.select_related('local', 'local__cidade', 'local__cidade__polo', 'tipo', 'fabricante').prefetch_related('historico_movimentacao')
+     
     context = {
-        'equipamentos': equipamentos
+        'equipamentos': equipamentos,
+        'localidades': localidades,
     }
-    print(request)
+    
     return render(request, 'equipamentos.html', context)
 
 def inserir_equipamento(request):
