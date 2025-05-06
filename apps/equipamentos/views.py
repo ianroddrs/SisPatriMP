@@ -7,6 +7,8 @@ def equipamentos(request):
     localidades = Local.objects.select_related()
     equipamentos = Equipamento.objects.select_related('local', 'local__cidade', 'local__cidade__polo', 'tipo', 'fabricante').prefetch_related('historico_movimentacao')
      
+    print(localidades)
+    
     context = {
         'equipamentos': equipamentos,
         'localidades': localidades,

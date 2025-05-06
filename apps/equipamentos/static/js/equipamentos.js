@@ -1,3 +1,19 @@
+class Equipamentos{
+    constructor(){
+        this.localidades = this.getLocalidades()
+    }
+
+    getLocalidades(){
+        fetch('api/localidades')
+        .then(res => res.json())
+        .then(data => {
+            this.localidades = data.localidades
+        })
+    }   
+}
+
+let e = new Equipamentos()
+
 let modal = document.querySelector('#modal-form')
 
 if(modal){
