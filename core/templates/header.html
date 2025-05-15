@@ -1,0 +1,43 @@
+{% load static %}
+
+<header class="bg-dark sticky-top">
+  <nav class="navbar navbar-expand-md" data-bs-theme="dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{% url 'home' %}">
+        <span class="ms-2 fw-bold text-uppercase">SisPatri<span class="text-danger">MP</span></span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column justify-content-between">
+          <div class="d-md-none">
+            {% include 'aside.html' %}
+          </div>
+          <ul class="nav ms-md-auto justify-content-center">
+            <li class="nav-item dropdown">
+              <button type="button" class="btn btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" >
+                <span class="bg-danger rounded-circle d-inline-block" style="width: 25px; height: 25px;">
+                I
+                </span>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end rounded-3">
+                <li class="dropdown-item"></li>
+                <li class="dropdown-divider"></li>
+                <li class="dropdown-item">
+                  <a class="btn btn-sm btn-danger w-100 text-start rounded-1" href="#">
+                    <i class="bi bi-box-arrow-left me-2"></i> Sair
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>

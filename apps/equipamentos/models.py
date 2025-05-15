@@ -20,6 +20,7 @@ class Equipamento(models.Model):
     mac = models.CharField(max_length=17, blank=True, null=True, unique=True)  # Formato "00:00:00:00:00:00"
     fabricante = models.ForeignKey('equipamentos.fabricanteequipamento', on_delete=models.CASCADE, related_name='equipamentos')
     patrimonio = models.CharField(max_length=50, unique=True)
+
     observacao = models.TextField(blank=True, null=True)
 
     def __str__(self):

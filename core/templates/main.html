@@ -32,13 +32,10 @@
 <body class="d-flex flex-column h-100">
     {% include 'header.html' %}
     <main class="d-flex flex-grow-1 flex-shrink-0">
-        <aside class="bg-white border-end border-2 pt-5 d-none d-md-block">    
+        <aside class="bg-dark pt-5 d-none d-md-block border-top border-2 border-secondary">    
             {% include 'aside.html' %}
         </aside>
         <section class="bg-white" id="main-container">
-            <nav class="bg-white p-2 border-bottom border-2 position-sticky top-0">
-                <br>
-            </nav>
             {% block content %}{% endblock %}
         </section>
         {% include 'loading.html' %}
