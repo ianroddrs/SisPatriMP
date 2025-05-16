@@ -2,25 +2,43 @@ from django.shortcuts import render, HttpResponse
 from django.http import JsonResponse
 from .models import Equipamento, TipoEquipamento, FabricanteEquipamento
 from apps.localidades.models import Polo, Cidade, Local, HistoricoMovimentacao
+from collections import defaultdict
+import json
 
 def equipamentos(request):
-    localidades = Local.objects.select_related()
-    equipamentos = Equipamento.objects.select_related('local', 'local__cidade', 'local__cidade__polo', 'tipo', 'fabricante').prefetch_related('historico_movimentacao')
-     
-    print(localidades)
-    
-    context = {
-        'equipamentos': equipamentos,
-        'localidades': localidades,
-    }
-    
-    return render(request, 'equipamentos.html', context)
+    action = request.GET.get('action')
+  
+    if not action:
+        equipamentos = Equipamento.objects.select_related('local', 'local__cidade', 'local__cidade__polo', 'tipo', 'fabricante').prefetch_related('historico_movimentacao')
+        
+        context = {
+            'equipamentos': equipamentos,
+        }
+        
+        return render(request, 'equipamentos.html', context)
+    elif action == 'localidades':
+        localidades = Local.objects.select_related().values_list('nome', 'cidade__nome', 'cidade__polo__nome')
+
+        estrutura = defaultdict(lambda: defaultdict(list))
+        for local, cidade, polo in localidades:
+            estrutura[polo][cidade].append(local)
+            
+        resultado = {polo: cidades_dict for polo, cidades_dict in estrutura.items()}
+        
+        context = {
+            'localidades': json.dumps(resultado, ensure_ascii=False, indent=2),
+        }
+        
+        return JsonResponse(context, safe=False)
+        
 
 def inserir_equipamento(request):
     if request.GET:
-        polo, _ = Polo.objects.get_or_create(nome=request.GET.get('polo'))
+        # polo, _ = Polo.objects.get_or_create(nome=request.GET.get('polo'))
+        polo, _ = Polo.objects.get_or_create(nome='Região Administrativa Belém II')
         
-        cidade, _ = Cidade.objects.get_or_create(nome=request.GET.get('cidade'), polo=polo)
+        # cidade, _ = Cidade.objects.get_or_create(nome=request.GET.get('cidade'), polo=polo)
+        cidade, _ = Cidade.objects.get_or_create(nome='Ananindeua', polo=polo)
         
         local, _ = Local.objects.get_or_create(nome=request.GET.get('local'), cidade=cidade)
         
