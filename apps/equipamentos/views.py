@@ -17,11 +17,21 @@ def equipamentos(request):
         
         return render(request, 'equipamentos.html', context)
     elif action == 'localidades':
-        localidades = Local.objects.select_related().values_list('nome', 'cidade__nome', 'cidade__polo__nome')
+        estrutura = defaultdict(dict)
 
-        estrutura = defaultdict(lambda: defaultdict(list))
-        for local, cidade, polo in localidades:
-            estrutura[polo][cidade].append(local)
+        localidades = Local.objects.select_related('cidade__polo').values_list(
+            'nome', 'cidade__nome', 'cidade__polo__nome'
+        )
+
+        if localidades:
+            for local, cidade, polo in localidades:
+                if cidade not in estrutura[polo]:
+                    estrutura[polo][cidade] = []
+                estrutura[polo][cidade].append(local)
+        else:
+            cidades = Cidade.objects.select_related('polo').values_list('nome', 'polo__nome')
+            for cidade, polo in cidades:
+                estrutura[polo][cidade] = []
             
         resultado = {polo: cidades_dict for polo, cidades_dict in estrutura.items()}
         

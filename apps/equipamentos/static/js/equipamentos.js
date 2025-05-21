@@ -13,11 +13,10 @@ class Equipamentos{
     }
 
     getLocalidades(){
-        fetch('?action=localidades')
+        fetch('/static/json/relacao_polos_cidades.json')
         .then(res => res.json())
         .then(data => {
-            let localidades = JSON.parse(data.localidades)
-            this.localidades = localidades
+            this.localidades = data
         })
     }
 }
@@ -25,26 +24,24 @@ class Equipamentos{
 let e = new Equipamentos()
 
 function adicionarOptions(){
-    let options = {
-        polos : Object.keys(e.localidades),
-        cidades : Object.values(e.localidades).flatMap(polo => Object.keys(polo)),
-        locais : Object.values(e.localidades).flatMap(polo =>Object.values(polo).flat())
-    }
+    let select = e.modal.querySelector('select#cidades')
 
-    Object.keys(options).forEach(i=>{
-        let select = e.modal.querySelector([`select#${i}`])
-        options[i].forEach(j=>{
+    Object.keys(e.localidades).forEach(polo => {
+        let cidades = e.localidades[polo]
+
+        let optgroup = document.createElement('optgroup')
+        optgroup.label = polo
+
+        cidades.forEach(cidade => {
             let option = document.createElement('option')
-            option.value = j
-            option.textContent = j
-            select.appendChild(option)
+            option.value = cidade
+            option.textContent = cidade
+
+            optgroup.appendChild(option)
         })
 
-        select.addEventListener('change', () => {
-            
-        })
+        select.appendChild(optgroup)
     })
-
 }
 
 async function enviarDados() {
