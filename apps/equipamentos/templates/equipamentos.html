@@ -116,6 +116,13 @@
                 <label for="cidade" class="form-label">Cidade</label>
                 <select class="form-select" required id="cidades" name="cidade">
                   <option value="null" selected>Selecione a cidade</option>
+                  {% for regiao, cidades in regioes.items %}
+                      <optgroup label="{{ regiao }}">
+                          {% for cidade in cidades %}
+                              <option value="{{ cidade }}">{{ cidade }}</option>
+                          {% endfor %}
+                      </optgroup>
+                  {% endfor %}
                 </select>
               </div>
         
@@ -128,9 +135,9 @@
         
               <div class="mb-3">
                 <label for="observacao" class="form-label">Observação</label>
-                <textarea class="form-control" rows="8" name="observacao" id="observacao" placeholder="Alguma observação?"></textarea>
+                <textarea class="form-control" rows="12" name="observacao" id="observacao" placeholder="Alguma observação?"></textarea>
               </div>
-        
+
             </div>
         
             <div class="col-lg-6 col-12">

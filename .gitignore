@@ -2,8 +2,7 @@ env/
 db.sqlite3
 core/.env
 core/__pycache__/
-main/__pycache__/
-main/migrations/
+core/migrations/
 apps/equipamentos/__pycache__/
 apps/equipamentos/migrations/
 apps/localidades/__pycache__/

@@ -2,7 +2,79 @@
 {% load static %}
 
 {% block static %}
+  <script src="{% static 'js/localidades.js' %}" defer></script>
 {% endblock %}
 
 {% block content %}
+
+<article class="container-fluid">
+  <div class="pt-3 border-bottom">
+    <a href="{% url 'localidades' %}" class="d-flex text-decoration-none align-items-center text-dark fw-bold">
+      <span class="rounded-circle text-bg-danger d-flex align-items-center justify-content-center me-2" style="height: 30px; width: 30px;">
+        <i class="bi bi-geo-alt-fill"></i>
+      </span>
+        Localidades
+    </a>
+
+    <ul class="nav nav-underline mt-2">
+      <li class="nav-item">
+        <a class="nav-link text-dark active" aria-current="page" href="#">Todos</a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="py-2 border-bottom d-flex justify-content-between align-items-center">
+    <div>
+      <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modal-form">
+        <i class="bi bi-plus"></i>
+        Adicionar um item
+      </button>
+    </div>
+    <ul class="nav">
+      <li class="nav-item">
+        <a class="nav-link text-dark"href="#"><i class="bi bi-filter"></i> Filtro</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-dark" href="#"><i class="bi bi-grid"></i> Exibir</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-dark" href="#"><i class="bi bi-inboxes"></i> Agrupar</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-dark" href="#"><i class="bi bi-layout-sidebar-reverse"></i> Detalhes</a>
+      </li>
+      <li class="nav-item">
+        <div class="mx-2">
+          <input type="text" class="form-control text-end" placeholder="Pesquisar">
+        </div>
+      </li>
+    </ul>
+    
+  </div>
+</article>
+
+<form action="{% url 'localidades' %}" method="post">
+  <div class="modal fade" id="modal-form">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="titulo-modal">Adicionar local</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            {% csrf_token %}
+
+            
+            
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            <button type="submit" class="btn btn-primary">Salvar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+</form>
+
+
 {% endblock %}
