@@ -31,7 +31,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core',
     'apps.equipamentos',
-    'apps.localidades'
+    'apps.localidades',
+    'apps.movimentacao'
 ]
 
 MIDDLEWARE = [

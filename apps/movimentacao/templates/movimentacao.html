@@ -1,0 +1,103 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block static %}
+  {# Adicione um JS específico para esta página, se necessário #}
+  <script src="{% static 'js/movimentacoes.js' %}" defer></script>
+{% endblock %}
+
+{% block content %}
+
+<main class="container-xl py-4">
+  <!-- SEÇÃO DO CABEÇALHO DA PÁGINA -->
+  <div class="pb-3 mb-4 border-bottom">
+    <a href="{% url 'movimentacao' %}" class="d-flex align-items-center text-dark text-decoration-none">
+      <span class="bg-info text-white d-flex align-items-center justify-content-center me-3 rounded-circle" style="width: 40px; height: 40px;">
+        <i class="bi bi-arrow-down-up fs-5"></i>
+      </span>
+      <h1 class="h4 mb-0">Histórico de Movimentação</h1>
+    </a>
+
+    <!-- NAVEGAÇÃO POR ABAS -->
+    <ul class="nav nav-tabs mt-3">
+      <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="#">Todos</a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- CARD PARA CONTER OS FILTROS E A TABELA DE DADOS -->
+  <div class="card shadow-sm">
+    <!-- CABEÇALHO DO CARD COM OPÇÕES DE FILTRO -->
+    <div class="card-header bg-light">
+        <form method="GET" action="{% url 'movimentacao' %}">
+            <div class="d-flex flex-wrap align-items-center justify-content-end gap-3">
+                
+                <!-- Filtro por Equipamento -->
+                <div class="flex-grow-1" style="min-width: 250px;">
+                    <label for="equipamento-search" class="form-label small mb-0">Pesquisar Equipamento</label>
+                    <input type="text" id="equipamento-search" name="equipamento" class="form-control form-control-sm" placeholder="Nome ou Patrimônio...">
+                </div>
+
+                <!-- Filtro por Data -->
+                <div class="d-flex align-items-center gap-2">
+                    <div>
+                        <label for="data_inicio" class="form-label small mb-0">De</label>
+                        <input type="date" id="data_inicio" name="data_inicio" class="form-control form-control-sm">
+                    </div>
+                    <div>
+                        <label for="data_fim" class="form-label small mb-0">Até</label>
+                        <input type="date" id="data_fim" name="data_fim" class="form-control form-control-sm">
+                    </div>
+                </div>
+
+                <!-- Botão de Filtrar -->
+                <div class="align-self-end">
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="bi bi-filter me-1"></i> Filtrar
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <!-- CORPO DO CARD COM A TABELA RESPONSIVA -->
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover table-borderless mb-0 align-middle">
+          <thead class="table-light">
+            <tr>
+              <th scope="col" class="ps-3">Equipamento</th>
+              <th scope="col">Patrimônio</th>
+              <th scope="col">Local de Origem</th>
+              <th scope="col">Local de Destino</th>
+              <th scope="col">Data da Movimentação</th>
+              <th scope="col">Usuário Responsável</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for movimentacao in historico %}
+            <tr>
+              <td class="ps-3">{{ movimentacao.equipamento.nome_equipamento|default:"N/A" }}</td>
+              <td><span class="badge bg-secondary">{{ movimentacao.equipamento.patrimonio|default:"N/A" }}</span></td>
+              <td>{{ movimentacao.local_origem.nome|default:"N/A" }}</td>
+              <td>{{ movimentacao.local_destino.nome|default:"N/A" }}</td>
+              <td>{{ movimentacao.data_movimentacao|date:"d/m/Y H:i" }}</td>
+              <td>{{ movimentacao.usuario.username|default:"Sistema" }}</td>
+            </tr>
+            {% empty %}
+            <!-- MENSAGEM PARA QUANDO A TABELA ESTIVER VAZIA -->
+            <tr>
+                <td colspan="6" class="text-center py-5">
+                    <p class="mb-0">Nenhum histórico de movimentação encontrado para os filtros selecionados.</p>
+                </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+{% endblock %}

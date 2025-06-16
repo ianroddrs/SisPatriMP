@@ -2,192 +2,217 @@
 {% load static %}
 
 {% block static %}
+  {# O 'defer' garante que o script seja executado após o HTML ser analisado #}
   <script src="{% static 'js/equipamentos.js' %}" defer></script>
 {% endblock %}
 
 {% block content %}
 
-<article class="container-fluid">
-  <div class="pt-3 border-bottom">
-    <a href="{% url 'equipamentos' %}" class="d-flex text-decoration-none align-items-center text-dark fw-bold">
-      <span class="rounded-circle text-bg-danger d-flex align-items-center justify-content-center me-2" style="height: 30px; width: 30px;">
-        <i class="bi bi-pc-display"></i>
+<main class="container-xl py-4">
+  <!-- SEÇÃO DO CABEÇALHO DA PÁGINA -->
+  <div class="pb-3 mb-4 border-bottom">
+    <a href="{% url 'equipamentos' %}" class="d-flex align-items-center text-dark text-decoration-none">
+      <span class="bg-primary text-white d-flex align-items-center justify-content-center me-3 rounded-circle" style="width: 40px; height: 40px;">
+        <i class="bi bi-pc-display fs-5"></i>
       </span>
-        Equipamentos
+      <h1 class="h4 mb-0">Equipamentos</h1>
     </a>
 
-    <ul class="nav nav-underline mt-2">
+    <!-- NAVEGAÇÃO POR ABAS PARA FILTRAGEM RÁPIDA -->
+    <ul class="nav nav-tabs mt-3">
       <li class="nav-item">
-        <a class="nav-link text-dark active" aria-current="page" href="#">Todos</a>
+        <a class="nav-link active" aria-current="page" href="#">Todos</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-dark" href="#"><i class="bi bi-pc m-2"></i>Computadores</a>
+        <a class="nav-link" href="#"><i class="bi bi-pc me-1"></i>Computadores</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-dark" href="#"><i class="bi bi-display m-2"></i>Monitores</a>
+        <a class="nav-link" href="#"><i class="bi bi-display me-1"></i>Monitores</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-dark" href="#"><i class="bi bi-printer m-2"></i>Scanners e Impressoras</a>
+        <a class="nav-link" href="#"><i class="bi bi-printer me-1"></i>Scanners e Impressoras</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-dark" href="#"><i class="bi bi-motherboard me-2"></i>Outros</a>
+        <a class="nav-link" href="#"><i class="bi bi-motherboard me-1"></i>Outros</a>
       </li>
     </ul>
   </div>
 
-  <div class="py-2 border-bottom d-flex justify-content-between align-items-center">
-    <div>
-      <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modal-form">
-        <i class="bi bi-plus"></i>
-        Adicionar um item
+  <!-- CARD PARA CONTER AS AÇÕES E A TABELA DE DADOS -->
+  <div class="card shadow-sm">
+    <!-- CABEÇALHO DO CARD COM AÇÕES PRINCIPAIS -->
+    <div class="card-header bg-light d-flex flex-wrap align-items-center justify-content-between gap-2">
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-form">
+        <i class="bi bi-plus-lg me-1"></i>
+        Adicionar Equipamento
       </button>
-    </div>
 
-    <ul class="nav">
-      <li class="nav-item">
-        <a class="nav-link text-dark"href="#"><i class="bi bi-filter"></i> Filtro</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-dark" href="#"><i class="bi bi-grid"></i> Exibir</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-dark" href="#"><i class="bi bi-inboxes"></i> Agrupar</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-dark" href="#"><i class="bi bi-layout-sidebar-reverse"></i> Detalhes</a>
-      </li>
-    </ul>
-    
-  </div>
-
-
-
-  <div class="table-responsive" >
-    <table class="table table-borderless table-hover">
-      <thead>
-        <tr>
-          <th scope="col">Polo</th>
-          <th scope="col">Cidade</th>
-          <th scope="col">Local</th>
-          <th scope="col">Tipo</th>
-          <th scope="col">Patrimônio</th>
-          <th scope="col">Nome Equipamento</th>
-          <th scope="col">Descrição</th>
-          <th scope="col">Fabrincante</th>
-          <th scope="col">MAC</th>
-          <th scope="col">Observação</th>
-          <th scope="col">Última Movimentação</th>
-        </tr>
-      </thead>
-      <tbody>
-          {% for equipamento in equipamentos %}
-          <tr>
-            <td>{{ equipamento.local.cidade.polo }}</td>
-            <td>{{ equipamento.local.cidade.nome }}</td>
-            <td>{{ equipamento.local.nome }}</td>
-            <td>{{ equipamento.tipo }}</td>
-            <td>{{ equipamento.patrimonio }}</td>
-            <td>{{ equipamento.nome_equipamento }}</td>
-            <td>{{ equipamento.descricao }}</td>
-            <td>{{ equipamento.fabricante }}</td>
-            <td>{{ equipamento.mac }}</td>
-            <td>{{ equipamento.observacao }}</td>
-            <td>{{equipamento.historico_movimentacao.all.last.data_movimentacao|date:"d/m/Y H:s" }}</td>
-          </tr>
-          {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</article>
-
-  <div class="modal fade" id="modal-form">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="titutlo-modal">Cadastrar equipamento</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      <!-- BOTÕES DE FILTRO E EXIBIÇÃO -->
+      <div class="d-flex align-items-center gap-2">
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Pesquisar local...">
+          <button class="btn btn-outline-secondary" type="button">
+            <i class="bi bi-search"></i>
+          </button>
         </div>
-        <div class="modal-body">
-          <form class="row" action="{% url 'inserir_equipamento' %}">
-  
-            <div class="col-lg-6 col-12">
-              
-              <div class="mb-3">
-                <label for="cidade" class="form-label">Cidade</label>
-                <select class="form-select" required id="cidades" name="cidade">
-                  <option value="null" selected>Selecione a cidade</option>
-                  {% for regiao, cidades in regioes.items %}
-                      <optgroup label="{{ regiao }}">
-                          {% for cidade in cidades %}
-                              <option value="{{ cidade }}">{{ cidade }}</option>
-                          {% endfor %}
-                      </optgroup>
-                  {% endfor %}
-                </select>
-              </div>
-        
-              <div class="mb-3">
-                <label for="local" class="form-label">Local</label>
-                <select class="form-select" required id="locais" name="local">
-                  <option value="null" selected>Selecione o local</option>
-                </select>
-              </div>
-        
-              <div class="mb-3">
-                <label for="observacao" class="form-label">Observação</label>
-                <textarea class="form-control" rows="12" name="observacao" id="observacao" placeholder="Alguma observação?"></textarea>
-              </div>
-
-            </div>
-        
-            <div class="col-lg-6 col-12">
-              
-              <div class="mb-3">
-                <label for="tipoEquipamento" class="form-label">Tipo de Equipamento</label>
-                <select class="form-select" required id="tipo_equipamentos" name="tipo_equipamento">
-                  <option value="null" selected>Selecione o tipo de equipamento</option>
-                </select>
-              </div>
-        
-              <div class="mb-3">
-                <label for="fabricante" class="form-label">Fabricante</label>
-                <select class="form-select" required id="fabricantes" name="fabricante">
-                  <option value="null" selected>Selecione o fabricante</option>
-                </select>
-              </div>
-        
-              <div class="mb-3">
-                <label for="patrimonio" class="form-label">Patrimônio</label>
-                <input autocomplete="off"required type="text" class="form-control" id="patrimonio" name="patrimonio" placeholder="Número do patrimônio">
-              </div>
-        
-        
-              <div class="mb-3">
-                <label for="nome" class="form-label">Nome</label>
-                <input autocomplete="off"required type="text" class="form-control" id="nome" name="nome" placeholder="Digite o nome do equipamento">
-              </div>
-        
-              <div class="mb-3">
-                <label for="mac" class="form-label">MAC</label>
-                <input autocomplete="off"required type="text" class="form-control" id="mac" name="mac" placeholder="Endereço MAC">
-              </div>
-        
-              <div class="mb-3">
-                <label for="descricao" class="form-label">Descrição</label>
-                <input autocomplete="off"type="text" class="form-control" id="descricao" name="descricao" placeholder="Digite a descrição">
-              </div>
-        
-        
-            </div>
-        </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-          <button type="button" class="btn btn-primary" onclick="enviarDados()">Salvar</button>
+        <div class="dropdown">
+          <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-three-dots-vertical"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li>        
+              <button class="dropdown-item" type="button">
+                <i class="bi bi-filter me-2"></i> Filtro
+              </button>
+            </li>
+            <li><a class="dropdown-item" href="#"><i class="bi bi-grid me-2"></i> Exibir</a></li>
+            <li><a class="dropdown-item" href="#"><i class="bi bi-inboxes me-2"></i> Agrupar</a></li>
+            <li><a class="dropdown-item" href="#"><i class="bi bi-layout-sidebar-reverse me-2"></i> Detalhes</a></li>
+          </ul>
         </div>
       </div>
     </div>
+    
+    <!-- CORPO DO CARD COM A TABELA RESPONSIVA -->
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover table-borderless mb-0 align-middle">
+          <!-- CABEÇALHO DA TABELA COM ESTILO SUTIL -->
+          <thead class="table-light">
+            <tr>
+              <th scope="col">Região</th>
+              <th scope="col">Cidade</th>
+              <th scope="col">Local</th>
+              <th scope="col">Tipo</th>
+              <th scope="col">Patrimônio</th>
+              <th scope="col">Nome Equipamento</th>
+              <th scope="col">Descrição</th>
+              <th scope="col">Fabricante</th>
+              <th scope="col">MAC</th>
+              <th scope="col">Observação</th>
+              <th scope="col">Última Movimentação</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for equipamento in equipamentos %}
+            <tr>
+              <td>{{ equipamento.local.cidade.regiao }}</td>
+              <td>{{ equipamento.local.cidade.nome }}</td>
+              <td>{{ equipamento.local.nome }}</td>
+              <td>{{ equipamento.tipo }}</td>
+              <td>{{ equipamento.patrimonio }}</td>
+              <td>{{ equipamento.nome_equipamento }}</td>
+              <td>{{ equipamento.descricao }}</td>
+              <td>{{ equipamento.fabricante }}</td>
+              <td>{{ equipamento.mac }}</td>
+              <td>{{ equipamento.observacao }}</td>
+              <td>{{ equipamento.historico_movimentacao.all.last.data_movimentacao|date:"d/m/Y H:s" }}</td>
+            </tr>
+            {% empty %}
+            <!-- MENSAGEM PARA QUANDO A TABELA ESTIVER VAZIA -->
+            <tr>
+                <td colspan="11" class="text-center py-5">
+                    <p class="mb-2">Nenhum equipamento encontrado.</p>
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal-form">
+                        <i class="bi bi-plus-lg me-1"></i>
+                        Adicionar
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
+</main>
 
+<!-- MODAL PARA ADICIONAR/EDITAR EQUIPAMENTO -->
+<div class="modal fade" id="modal-form" tabindex="-1" aria-labelledby="modal-form-label" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modal-form-label">Cadastrar Equipamento</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body">
+        <!-- O formulário foi movido para fora do modal-body para usar o modal-footer para os botões -->
+        <form class="row g-3" id="equipamento-form" action="{% url 'create_equipamento' %}" method="POST">
+          {% csrf_token %} {# Adicionar CSRF token para segurança #}
 
+          <!-- Coluna da Esquerda -->
+          <div class="col-lg-6 col-12">
+            <div class="mb-3">
+              <label for="cidades" class="form-label">Cidade</label>
+              <select class="form-select" required id="cidades" name="cidade">
+                <option value="" selected disabled>Selecione a cidade</option>
+                {% for regiao, cidades in cidades_regiao.items %}
+                  <optgroup label="{{ regiao }}">
+                    {% for cidade in cidades %}
+                      <option value="{{ cidade }}">{{ cidade }}</option>
+                    {% endfor %}
+                  </optgroup>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="locais" class="form-label">Local</label>
+              <select class="form-select" required id="locais" name="local">
+                <option value="" selected disabled>Primeiro, selecione a cidade</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="observacao" class="form-label">Observação</label>
+              <textarea class="form-control" rows="12" name="observacao" id="observacao" placeholder="Alguma observação?"></textarea>
+            </div>
+          </div>
+
+          <!-- Coluna da Direita -->
+          <div class="col-lg-6 col-12">
+            <div class="mb-3">
+              <label for="tipo_equipamentos" class="form-label">Tipo de Equipamento</label>
+              <select class="form-select" required id="tipo_equipamentos" name="tipo_equipamento">
+                <option value="" selected disabled>Selecione o tipo</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="fabricantes" class="form-label">Fabricante</label>
+              <select class="form-select" required id="fabricantes" name="fabricante">
+                <option value="" selected disabled>Selecione o fabricante</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="patrimonio" class="form-label">Patrimônio</label>
+              <input autocomplete="off" required type="text" class="form-control" id="patrimonio" name="patrimonio" placeholder="Número do patrimônio">
+            </div>
+
+            <div class="mb-3">
+              <label for="nome" class="form-label">Nome</label>
+              <input autocomplete="off" required type="text" class="form-control" id="nome" name="nome" placeholder="Ex: Dell Optiplex 3080">
+            </div>
+
+            <div class="mb-3">
+              <label for="mac" class="form-label">Endereço MAC</label>
+              <input autocomplete="off" type="text" class="form-control" id="mac" name="mac" placeholder="00:1B:44:11:3A:B7">
+            </div>
+
+            <div class="mb-3">
+              <label for="descricao" class="form-label">Descrição</label>
+              <input autocomplete="off" type="text" class="form-control" id="descricao" name="descricao" placeholder="Ex: CPU da recepção">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        {# O botão agora submete o form com id 'equipamento-form' #}
+        <button type="submit" form="equipamento-form" class="btn btn-primary">Salvar Equipamento</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

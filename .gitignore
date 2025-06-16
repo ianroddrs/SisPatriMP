@@ -7,3 +7,5 @@ apps/equipamentos/__pycache__/
 apps/equipamentos/migrations/
 apps/localidades/__pycache__/
 apps/localidades/migrations/
+apps/movimentacao/__pycache__/
+apps/movimentacao/migrations/

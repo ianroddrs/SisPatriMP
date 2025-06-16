@@ -1,6 +1,6 @@
 from django.db import models
 
-class Polo(models.Model):
+class Regioes(models.Model):
     nome = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
@@ -9,10 +9,10 @@ class Polo(models.Model):
 
 class Cidade(models.Model):
     nome = models.CharField(max_length=100)
-    polo = models.ForeignKey('polo', on_delete=models.CASCADE, related_name='cidades')
+    regiao = models.ForeignKey('regioes', on_delete=models.CASCADE, related_name='cidades')
 
     def __str__(self):
-        return f"{self.nome} ({self.polo.nome})"
+        return f"{self.nome} ({self.regiao.nome})"
 
 
 class Local(models.Model):

@@ -15,8 +15,8 @@
     </a>
   </li>
   <li class="nav-item my-1 px-3">
-    <a href="{% url 'home' %}" class="btn btn-dark w-100 text-start {% if request.resolver_match.url_name == 'historico' %}active{% endif %}">
-      <i class="bi bi-clock-history me-3"></i>Histórico
+    <a href="{% url 'movimentacao' %}" class="btn btn-dark w-100 text-start {% if request.resolver_match.url_name == 'historico' %}active{% endif %}">
+      <i class="bi bi-arrow-down-up me-3"></i>Movimentação
     </a>
   </li>
 </ul>
