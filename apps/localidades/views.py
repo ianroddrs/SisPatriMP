@@ -1,25 +1,122 @@
-from django.shortcuts import render
-from core.models import Regioes
-# from 
+import json
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
+from django.views import View
+from django.conf import settings
+from django.contrib import messages
+import os
 
-def localidades(request):
-    action = request.POST.get('action', None)
-    
-    regioes = Regioes.objects.prefetch_related('cidades').all()
-    
-    cidades_regiao = {}
+# Importe seus modelos aqui
+from core.models import Regioes, Cidade, Local
 
-    for regiao in regioes:
-        cidades = [cidade.nome for cidade in regiao.cidades.all()]
-        cidades_regiao[regiao.nome] = cidades
-    
-    context = {
-        'cidades_regiao': cidades_regiao
-    }
-    
-    if action == 'adicionar_local':
-        # cidade, _ = Cidade.objects.get_or_create(nome=request.GET.get('cidade'))
-        # local, _ = Local.objects.get_or_create(nome=request.GET.get('local'), cidade=cidade)
-        pass
-    return render(request, 'localidades.html', context)
+class LocalidadesView(View):
+    """
+    View para listar e cadastrar Localidades.
+    """
+    template_name = 'localidades.html'
 
+    def _get_cidades_por_regiao(self):
+        """Lê o arquivo JSON e retorna um dicionário de cidades agrupadas por região."""
+        try:
+            # Garante que o caminho para o arquivo JSON seja construído de forma segura
+            json_path = os.path.join(settings.BASE_DIR, 'sua_app', 'static', 'json', 'regioes.json')
+            with open(json_path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except FileNotFoundError:
+            return {}
+
+    def get(self, request, *args, **kwargs):
+        """
+        Método GET: Exibe a lista de locais e o formulário de cadastro.
+        """
+        localidades = Local.objects.select_related('cidade__regiao').all().order_by('cidade__regiao__nome', 'cidade__nome', 'nome')
+        cidades_regiao = self._get_cidades_por_regiao()
+        
+        context = {
+            'localidades': localidades,
+            'cidades_regiao': cidades_regiao
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        """
+        Método POST: Cria uma nova localidade.
+        """
+        cidade_nome = request.POST.get('cidade')
+        local_nome = request.POST.get('nome_local')
+        local_descricao = request.POST.get('descricao', '')
+
+        if not cidade_nome or not local_nome:
+            messages.error(request, 'Cidade e Nome do Local são campos obrigatórios.')
+            return redirect('localidades')
+
+        # Encontra a região da cidade selecionada a partir do JSON
+        cidades_regiao = self._get_cidades_por_regiao()
+        regiao_nome = None
+        for r_nome, cidades in cidades_regiao.items():
+            if cidade_nome in cidades:
+                regiao_nome = r_nome
+                break
+        
+        if not regiao_nome:
+            messages.error(request, f'A cidade "{cidade_nome}" não foi encontrada em nenhuma região.')
+            return redirect('localidades')
+
+        # Usa get_or_create para evitar duplicatas
+        regiao, _ = Regioes.objects.get_or_create(nome=regiao_nome)
+        cidade, _ = Cidade.objects.get_or_create(nome=cidade_nome, defaults={'regiao': regiao})
+        
+        # Cria a nova localidade
+        Local.objects.create(
+            nome=local_nome,
+            cidade=cidade,
+            descricao=local_descricao
+        )
+
+        messages.success(request, f'O local "{local_nome}" foi cadastrado com sucesso!')
+        return redirect('localidades')
+
+
+def local_update(request, pk):
+    """
+    View para atualizar os dados de um local.
+    Esta é uma implementação simples que espera dados via POST (ou AJAX).
+    """
+    if request.method == 'POST':
+        local = get_object_or_404(Local, pk=pk)
+        
+        # Simples atualização do nome e descrição. A mudança de cidade exigiria uma lógica mais complexa.
+        nome = request.POST.get('nome_local')
+        descricao = request.POST.get('descricao')
+
+        if nome:
+            local.nome = nome
+            local.descricao = descricao
+            local.save()
+            messages.success(request, 'Local atualizado com sucesso!')
+            return redirect('localidades')
+        else:
+            messages.error(request, 'O nome do local não pode ser vazio.')
+            return redirect('localidades')
+    
+    # Redireciona para a lista se o método não for POST
+    return redirect('localidades')
+
+
+def local_delete(request, pk):
+    """
+    View para deletar um local.
+    """
+    if request.method == 'POST':
+        local = get_object_or_404(Local, pk=pk)
+        try:
+            local.delete()
+            messages.success(request, f'O local "{local.nome}" foi excluído com sucesso.')
+        except Exception as e:
+            # Adiciona proteção caso haja equipamentos vinculados a este local
+            messages.error(request, f'Não foi possível excluir o local. Verifique se existem equipamentos vinculados a ele. Erro: {e}')
+        
+        return redirect('localidades')
+
+    # Redireciona para a lista se o método não for POST
+    return redirect('localidades')
