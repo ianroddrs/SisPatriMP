@@ -18,7 +18,6 @@ class LocalidadesView(View):
     def _get_cidades_por_regiao(self):
         """Lê o arquivo JSON e retorna um dicionário de cidades agrupadas por região."""
         try:
-            # Garante que o caminho para o arquivo JSON seja construído de forma segura
             json_path = os.path.join(settings.BASE_DIR, 'sua_app', 'static', 'json', 'regioes.json')
             with open(json_path, 'r', encoding='utf-8') as f:
                 return json.load(f)
@@ -78,14 +77,9 @@ class LocalidadesView(View):
 
 
 def local_update(request, pk):
-    """
-    View para atualizar os dados de um local.
-    Esta é uma implementação simples que espera dados via POST (ou AJAX).
-    """
     if request.method == 'POST':
         local = get_object_or_404(Local, pk=pk)
         
-        # Simples atualização do nome e descrição. A mudança de cidade exigiria uma lógica mais complexa.
         nome = request.POST.get('nome_local')
         descricao = request.POST.get('descricao')
 
@@ -104,9 +98,6 @@ def local_update(request, pk):
 
 
 def local_delete(request, pk):
-    """
-    View para deletar um local.
-    """
     if request.method == 'POST':
         local = get_object_or_404(Local, pk=pk)
         try:
@@ -118,5 +109,4 @@ def local_delete(request, pk):
         
         return redirect('localidades')
 
-    # Redireciona para a lista se o método não for POST
     return redirect('localidades')
