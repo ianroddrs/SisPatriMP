@@ -40,7 +40,6 @@
         <i class="bi bi-plus-lg me-1"></i>
         Adicionar Local
       </button>
-      <!-- Você pode adicionar um campo de pesquisa aqui se desejar -->
        
       <!-- CAMPO DE PESQUISA E BOTÕES DE AÇÃO -->
       <div class="d-flex align-items-center gap-2">
@@ -81,7 +80,11 @@
               <td>{{ local.cidade.regiao.nome }}</td>
               <td class="text-center">
                 <!-- Botões de Ação -->
-                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modal-edit-local-{{ local.pk }}">
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modal-edit-local-{{ local.pk }}"
+                        data-id="{{ local.pk }}"
+                        data-nome="{{ local.nome }}"
+                        data-descricao="{{ local.descricao|default_if_none:'' }}"
+                        data-cidade-id="{{ local.cidade.pk }}">
                     <i class="bi bi-pencil-square"></i> Editar
                 </button>
                 <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modal-delete-local-{{ local.pk }}">
@@ -121,10 +124,10 @@
               <label for="cidade-select" class="form-label">Cidade</label>
               <select class="form-select" required id="cidade-select" name="cidade">
                 <option value="" selected disabled>Selecione a cidade</option>
-                {% for regiao, cidades in cidades_regiao.items %}
-                  <optgroup label="{{ regiao }}">
-                    {% for cidade in cidades %}
-                      <option value="{{ cidade }}">{{ cidade }}</option>
+                {% for regiao_data in cidades_regiao %}
+                  <optgroup label="{{ regiao_data.regiao }}">
+                    {% for cidade_data in regiao_data.cidades %}
+                      <option value="{{ cidade_data.id }}">{{ cidade_data.nome }}</option>
                     {% endfor %}
                   </optgroup>
                 {% endfor %}
@@ -161,8 +164,20 @@
         <form action="{% url 'local_update' local.pk %}" method="POST">
           {% csrf_token %}
           <div class="modal-body">
-            <p><strong>Localidade atual:</strong> {{ local.cidade.nome }} ({{ local.cidade.regiao.nome }})</p>
-            <div class="alert alert-info small">Atualmente, a mudança de cidade/região não é suportada pela edição rápida.</div>
+            {# O select de cidade no modal de edição #}
+            <div class="mb-3">
+              <label for="cidade-edit-{{ local.pk }}" class="form-label">Cidade</label>
+              <select class="form-select" required id="cidade-edit-{{ local.pk }}" name="cidade">
+                <option value="" disabled>Selecione a cidade</option>
+                {% for regiao_data in cidades_regiao %}
+                  <optgroup label="{{ regiao_data.regiao }}">
+                    {% for cidade_data in regiao_data.cidades %}
+                      <option value="{{ cidade_data.id }}" {% if local.cidade.pk == cidade_data.id %}selected{% endif %}>{{ cidade_data.nome }}</option>
+                    {% endfor %}
+                  </optgroup>
+                {% endfor %}
+              </select>
+            </div>
             <div class="mb-3">
               <label for="nome_local_edit-{{ local.pk }}" class="form-label">Nome do Local</label>
               <input type="text" class="form-control" id="nome_local_edit-{{ local.pk }}" name="nome_local" value="{{ local.nome }}" required>
@@ -209,145 +224,3 @@
 {% endfor %}
 
 {% endblock %}
-
-
-{% comment %}
-
-<main class="container-xl py-4">
-  <!-- SEÇÃO DO CABEÇALHO DA PÁGINA -->
-  <div class="pb-3 mb-4 border-bottom">
-    <a href="{% url 'localidades' %}" class="d-flex align-items-center text-dark text-decoration-none">
-      <span class="bg-success text-white d-flex align-items-center justify-content-center me-3 rounded-circle" style="width: 40px; height: 40px;">
-        <i class="bi bi-geo-alt-fill fs-5"></i>
-      </span>
-      <h1 class="h4 mb-0">Localidades</h1>
-    </a>
-
-    <!-- NAVEGAÇÃO POR ABAS (MESMO QUE SÓ TENHA UMA OPÇÃO, MANTÉM O PADRÃO) -->
-    <ul class="nav nav-tabs mt-3">
-      <li class="nav-item">
-        <a class="nav-link active" aria-current="page" href="#">Todos</a>
-      </li>
-    </ul>
-  </div>
-
-  <!-- CARD PARA CONTER AS AÇÕES E A TABELA DE DADOS -->
-  <div class="card shadow-sm">
-    <!-- CABEÇALHO DO CARD COM AÇÕES PRINCIPAIS -->
-    <div class="card-header bg-light d-flex flex-wrap align-items-center justify-content-between gap-3">
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-form">
-        <i class="bi bi-plus-lg me-1"></i>
-        Adicionar Local
-      </button>
-
-      <!-- CAMPO DE PESQUISA E BOTÕES DE AÇÃO -->
-      <div class="d-flex align-items-center gap-2">
-        <div class="input-group">
-          <input type="text" class="form-control" placeholder="Pesquisar local...">
-          <button class="btn btn-outline-secondary" type="button">
-            <i class="bi bi-search"></i>
-          </button>
-        </div>
-        <div class="dropdown">
-          <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi bi-three-dots-vertical"></i>
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="#"><i class="bi bi-filter me-2"></i> Filtro Avançado</a></li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-inboxes me-2"></i> Agrupar por Região</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    
-    <!-- CORPO DO CARD COM A TABELA RESPONSIVA -->
-    <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="table table-striped table-hover table-borderless mb-0 align-middle">
-          <thead class="table-light">
-            <tr>
-              <th scope="col" class="ps-3">Nome do Local</th>
-              <th scope="col">Cidade</th>
-              <th scope="col">Região</th>
-              <th scope="col" class="text-center">Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for local in localidades %}
-            <tr>
-              <td class="ps-3">{{ local.nome }}</td>
-              <td>{{ local.cidade.nome }}</td>
-              <td>{{ local.cidade.regiao }}</td>
-              <td class="text-center">
-                <!-- Dropdown de ações por linha -->
-                <div class="dropdown">
-                  <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Opções
-                  </button>
-                  <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil-square me-2"></i>Editar</a></li>
-                    <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-trash3 me-2"></i>Excluir</a></li>
-                  </ul>
-                </div>
-              </td>
-            </tr>
-            {% empty %}
-            <!-- MENSAGEM PARA QUANDO A TABELA ESTIVER VAZIA -->
-            <tr>
-                <td colspan="4" class="text-center py-5">
-                    <p class="mb-2">Nenhuma localidade encontrada.</p>
-                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal-form">
-                        <i class="bi bi-plus-lg me-1"></i>
-                        Adicionar
-                    </button>
-                </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</main>
-
-<!-- MODAL PARA ADICIONAR/EDITAR LOCALIDADE -->
-<div class="modal fade" id="modal-form" tabindex="-1" aria-labelledby="modal-form-label" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="modal-form-label">Adicionar Local</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-      </div>
-      <form id="local-form" action="{% url 'localidades' %}" method="POST">
-        <div class="modal-body">
-            {% csrf_token %}
-            
-            <div class="mb-3">
-              <label for="cidades" class="form-label">Cidade</label>
-              <select class="form-select" required id="cidades" name="cidade">
-                <option value="" selected disabled>Selecione a cidade</option>
-                {% for regiao, cidades in cidades_regiao.items %}
-                  <optgroup label="{{ regiao }}">
-                    {% for cidade in cidades %}
-                      <option value="{{ cidade.id }}">{{ cidade.nome }}</option>
-                    {% endfor %}
-                  </optgroup>
-                {% endfor %}
-              </select>
-            </div>
-
-            <div class="mb-3">
-                <label for="nome_local" class="form-label">Nome do Local</label>
-                <input type="text" class="form-control" id="nome_local" name="nome_local" placeholder="Ex: Prédio Administrativo, Sala 102" required>
-            </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-          <button type="submit" class="btn btn-primary">Salvar Local</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-{% endcomment %}

@@ -15,25 +15,25 @@ class LocalidadesView(View):
     """
     template_name = 'localidades.html'
 
-    def _get_cidades_por_regiao(self):
-        """Lê o arquivo JSON e retorna um dicionário de cidades agrupadas por região."""
-        try:
-            json_path = os.path.join(settings.BASE_DIR, 'sua_app', 'static', 'json', 'regioes.json')
-            with open(json_path, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        except FileNotFoundError:
-            return {}
-
     def get(self, request, *args, **kwargs):
         """
         Método GET: Exibe a lista de locais e o formulário de cadastro.
         """
         localidades = Local.objects.select_related('cidade__regiao').all().order_by('cidade__regiao__nome', 'cidade__nome', 'nome')
-        cidades_regiao = self._get_cidades_por_regiao()
+        
+        # Obter cidades e regiões diretamente do banco de dados
+        cidades_regiao_data = []
+        regioes = Regioes.objects.all().order_by('nome')
+        for regiao in regioes:
+            cidades_da_regiao = Cidade.objects.filter(regiao=regiao).order_by('nome')
+            cidades_regiao_data.append({
+                'regiao': regiao.nome,
+                'cidades': [{'id': cidade.id, 'nome': cidade.nome} for cidade in cidades_da_regiao]
+            })
         
         context = {
             'localidades': localidades,
-            'cidades_regiao': cidades_regiao
+            'cidades_regiao': cidades_regiao_data # Passa os dados dinâmicos para o template
         }
         return render(request, self.template_name, context)
 
@@ -41,38 +41,27 @@ class LocalidadesView(View):
         """
         Método POST: Cria uma nova localidade.
         """
-        cidade_nome = request.POST.get('cidade')
+        cidade_id = request.POST.get('cidade') # Agora esperamos o ID da cidade
         local_nome = request.POST.get('nome_local')
         local_descricao = request.POST.get('descricao', '')
 
-        if not cidade_nome or not local_nome:
+        if not cidade_id or not local_nome:
             messages.error(request, 'Cidade e Nome do Local são campos obrigatórios.')
             return redirect('localidades')
 
-        # Encontra a região da cidade selecionada a partir do JSON
-        cidades_regiao = self._get_cidades_por_regiao()
-        regiao_nome = None
-        for r_nome, cidades in cidades_regiao.items():
-            if cidade_nome in cidades:
-                regiao_nome = r_nome
-                break
+        try:
+            cidade = get_object_or_404(Cidade, pk=cidade_id)
+            
+            # Cria a nova localidade
+            Local.objects.create(
+                nome=local_nome,
+                cidade=cidade,
+                descricao=local_descricao
+            )
+            messages.success(request, f'O local "{local_nome}" foi cadastrado com sucesso!')
+        except Exception as e:
+            messages.error(request, f'Erro ao cadastrar local: {e}')
         
-        if not regiao_nome:
-            messages.error(request, f'A cidade "{cidade_nome}" não foi encontrada em nenhuma região.')
-            return redirect('localidades')
-
-        # Usa get_or_create para evitar duplicatas
-        regiao, _ = Regioes.objects.get_or_create(nome=regiao_nome)
-        cidade, _ = Cidade.objects.get_or_create(nome=cidade_nome, defaults={'regiao': regiao})
-        
-        # Cria a nova localidade
-        Local.objects.create(
-            nome=local_nome,
-            cidade=cidade,
-            descricao=local_descricao
-        )
-
-        messages.success(request, f'O local "{local_nome}" foi cadastrado com sucesso!')
         return redirect('localidades')
 
 
@@ -82,10 +71,13 @@ def local_update(request, pk):
         
         nome = request.POST.get('nome_local')
         descricao = request.POST.get('descricao')
+        cidade_id = request.POST.get('cidade') # Permite atualizar a cidade também
 
         if nome:
             local.nome = nome
             local.descricao = descricao
+            if cidade_id: # Atualiza a cidade se fornecida
+                local.cidade = get_object_or_404(Cidade, pk=cidade_id)
             local.save()
             messages.success(request, 'Local atualizado com sucesso!')
             return redirect('localidades')
@@ -110,3 +102,4 @@ def local_delete(request, pk):
         return redirect('localidades')
 
     return redirect('localidades')
+

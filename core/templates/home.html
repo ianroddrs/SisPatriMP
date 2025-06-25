@@ -1,6 +1,13 @@
 {% extends 'main.html' %}
 {% load static %}
 
+{% block static %}
+  {# CDN do ApexCharts #}
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  {# Script JS para o dashboard #}
+  <script src="{% static 'js/dashboard.js' %}" defer></script>
+{% endblock %}
+
 {% block content %}
 <main class="container-xl py-4">
   <!-- SEÇÃO DO CABEÇALHO DA PÁGINA -->
@@ -25,7 +32,7 @@
           </div>
           <div class="flex-grow-1">
             <h6 class="card-subtitle text-muted mb-1">Total de Equipamentos</h6>
-            <p class="h4 mb-0">1,284</p>
+            <p class="h4 mb-0">{{ total_equipamentos }}</p>
           </div>
         </div>
       </div>
@@ -40,7 +47,7 @@
           </div>
           <div class="flex-grow-1">
             <h6 class="card-subtitle text-muted mb-1">Total de Locais</h6>
-            <p class="h4 mb-0">78</p>
+            <p class="h4 mb-0">{{ total_locais }}</p>
           </div>
         </div>
       </div>
@@ -54,8 +61,8 @@
               </div>
             </div>
             <div class="flex-grow-1">
-              <h6 class="card-subtitle text-muted mb-1">Movimentações (Mês)</h6>
-              <p class="h4 mb-0">215</p>
+              <h6 class="card-subtitle text-muted mb-1">Movimentações (Últimos 30 dias)</h6>
+              <p class="h4 mb-0">{{ movimentacoes_ultimo_mes }}</p>
             </div>
           </div>
         </div>
@@ -70,7 +77,7 @@
             </div>
             <div class="flex-grow-1">
               <h6 class="card-subtitle text-muted mb-1">Itens em Alerta</h6>
-              <p class="h4 mb-0">12</p>
+              <p class="h4 mb-0">{{ itens_em_alerta }}</p>
             </div>
           </div>
         </div>
@@ -82,7 +89,7 @@
     <div class="col-lg-8">
       <div class="card shadow-sm h-100">
         <div class="card-header">
-          <h5 class="card-title mb-0">Equipamentos por Local</h5>
+          <h5 class="card-title mb-0">Equipamentos por Local (Top 10)</h5>
         </div>
         <div class="card-body">
           <div id="chart-equipamentos-local"></div>
@@ -106,64 +113,20 @@
     <div class="col-lg-7">
       <div class="card shadow-sm h-100">
         <div class="card-header">
-          <h5 class="card-title mb-0">Últimas Movimentações</h5>
+          <h5 class="card-title mb-0">Movimentações por Mês (Últimos 6 meses)</h5>
         </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover table-borderless mb-0 align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th class="ps-3">Equipamento</th>
-                            <th>Origem</th>
-                            <th>Destino</th>
-                            <th>Data</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- DADOS DE EXEMPLO -->
-                        <tr>
-                            <td class="ps-3">Notebook Dell Vostro</td>
-                            <td>Sala de TI</td>
-                            <td>Recepção</td>
-                            <td><span class="text-muted">16/06/2025 09:30</span></td>
-                        </tr>
-                        <tr>
-                            <td class="ps-3">Monitor LG 24"</td>
-                            <td>Depósito</td>
-                            <td>Sala 201</td>
-                            <td><span class="text-muted">15/06/2025 17:15</span></td>
-                        </tr>
-                        <tr>
-                            <td class="ps-3">Impressora HP LaserJet</td>
-                            <td>Financeiro</td>
-                            <td>Marketing</td>
-                            <td><span class="text-muted">15/06/2025 14:00</span></td>
-                        </tr>
-                        <tr>
-                            <td class="ps-3">CPU Positivo</td>
-                            <td>Sala 305</td>
-                            <td>Manutenção</td>
-                            <td><span class="text-muted">14/06/2025 11:45</span></td>
-                        </tr>
-                         <tr>
-                            <td class="ps-3">Webcam Logitech C920</td>
-                            <td>Depósito</td>
-                            <td>Sala de Reuniões</td>
-                            <td><span class="text-muted">14/06/2025 10:00</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div class="card-body"> {# Removido p-0 para usar o padding do card-body #}
+          <div id="chart-movimentacoes-mes"></div> {# Novo ID para o gráfico de movimentações #}
         </div>
         <div class="card-footer text-center bg-light">
-            <a href="#" class="text-decoration-none">Ver todo o histórico <i class="bi bi-arrow-right-short"></i></a>
+            <a href="{% url 'movimentacao' %}" class="text-decoration-none">Ver todo o histórico <i class="bi bi-arrow-right-short"></i></a>
         </div>
       </div>
     </div>
     <div class="col-lg-5">
         <div class="card shadow-sm h-100">
           <div class="card-header">
-            <h5 class="card-title mb-0">Equipamentos por Fabricante</h5>
+            <h5 class="card-title mb-0">Equipamentos por Fabricante (Top 10)</h5>
           </div>
           <div class="card-body">
             <div id="chart-equipamentos-fabricante"></div>
@@ -173,101 +136,4 @@
   </div>
 
 </main>
-<!-- CDN do ApexCharts -->
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  // ---- Gráfico de Barras: Equipamentos por Local ----
-  var optionsLocal = {
-    series: [{
-      name: 'Quantidade',
-      data: [44, 55, 57, 56, 61, 58, 63, 60, 66]
-    }],
-    chart: {
-      type: 'bar',
-      height: 350,
-      toolbar: { show: false }
-    },
-    plotOptions: {
-      bar: {
-        horizontal: false,
-        columnWidth: '55%',
-        endingShape: 'rounded'
-      },
-    },
-    dataLabels: { enabled: false },
-    stroke: {
-      show: true,
-      width: 2,
-      colors: ['transparent']
-    },
-    xaxis: {
-      categories: ['Depósito', 'Sala TI', 'Recepção', 'Financeiro', 'Marketing', 'Sala 101', 'Sala 102', 'Sala 201', 'Manutenção'],
-    },
-    yaxis: {
-      title: { text: 'Nº de equipamentos' }
-    },
-    fill: { opacity: 1 },
-    tooltip: {
-      y: {
-        formatter: function (val) {
-          return val + " equipamentos"
-        }
-      }
-    }
-  };
-  var chartLocal = new ApexCharts(document.querySelector("#chart-equipamentos-local"), optionsLocal);
-  chartLocal.render();
-
-  // ---- Gráfico de Donut: Equipamentos por Tipo ----
-  var optionsTipo = {
-    series: [450, 380, 220, 150, 84],
-    chart: {
-      type: 'donut',
-      height: 350
-    },
-    labels: ['Computadores', 'Monitores', 'Impressoras', 'Rede', 'Outros'],
-    responsive: [{
-      breakpoint: 480,
-      options: {
-        chart: {
-          width: 200
-        },
-        legend: {
-          position: 'bottom'
-        }
-      }
-    }]
-  };
-  var chartTipo = new ApexCharts(document.querySelector("#chart-equipamentos-tipo"), optionsTipo);
-  chartTipo.render();
-
-  // ---- Gráfico de Barras Horizontais: Equipamentos por Fabricante ----
-  var optionsFabricante = {
-          series: [{
-          data: [400, 330, 348, 290, 180, 120]
-        }],
-          chart: {
-          type: 'bar',
-          height: 350,
-          toolbar: { show: false }
-        },
-        plotOptions: {
-          bar: {
-            borderRadius: 4,
-            horizontal: true,
-          }
-        },
-        dataLabels: {
-          enabled: false
-        },
-        xaxis: {
-          categories: ['Dell', 'HP', 'Lenovo', 'Positivo', 'Samsung', 'LG'],
-        }
-        };
-
-    var chartFabricante = new ApexCharts(document.querySelector("#chart-equipamentos-fabricante"), optionsFabricante);
-    chartFabricante.render();
-});
-</script>
 {% endblock %}

@@ -26,37 +26,48 @@
     </ul>
   </div>
 
+  <!-- Exibir mensagens do Django (sucesso, erro, etc.) -->
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+
   <!-- CARD PARA CONTER OS FILTROS E A TABELA DE DADOS -->
   <div class="card shadow-sm">
-    <!-- CABEÇALHO DO CARD COM OPÇÕES DE FILTRO -->
-    <div class="card-header bg-light">
-        <form method="GET" action="{% url 'movimentacao' %}">
-            <div class="d-flex flex-wrap align-items-center justify-content-end gap-3">
-                
-                <!-- Filtro por Equipamento -->
-                <div class="flex-grow-1" style="min-width: 250px;">
-                    <label for="equipamento-search" class="form-label small mb-0">Pesquisar Equipamento</label>
-                    <input type="text" id="equipamento-search" name="equipamento" class="form-control form-control-sm" placeholder="Nome ou Patrimônio...">
-                </div>
+    <!-- CABEÇALHO DO CARD COM OPÇÕES DE FILTRO E BOTÃO DE NOVA MOVIMENTAÇÃO -->
+    <div class="card-header bg-light d-flex flex-wrap align-items-center justify-content-between gap-3">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-nova-movimentacao">
+            <i class="bi bi-plus-lg me-1"></i>
+            Registrar Nova Movimentação
+        </button>
+        <form method="GET" action="{% url 'movimentacao' %}" class="d-flex flex-wrap align-items-center justify-content-end gap-3">
+            <!-- Filtro por Equipamento -->
+            <div class="flex-grow-1" style="min-width: 250px;">
+                <label for="equipamento-search" class="form-label small mb-0">Pesquisar Equipamento</label>
+                <input type="text" id="equipamento-search" name="equipamento_search" class="form-control form-control-sm" placeholder="Nome ou Patrimônio..." value="{{ equipamento_search|default:'' }}">
+            </div>
 
-                <!-- Filtro por Data -->
-                <div class="d-flex align-items-center gap-2">
-                    <div>
-                        <label for="data_inicio" class="form-label small mb-0">De</label>
-                        <input type="date" id="data_inicio" name="data_inicio" class="form-control form-control-sm">
-                    </div>
-                    <div>
-                        <label for="data_fim" class="form-label small mb-0">Até</label>
-                        <input type="date" id="data_fim" name="data_fim" class="form-control form-control-sm">
-                    </div>
+            <!-- Filtro por Data -->
+            <div class="d-flex align-items-center gap-2">
+                <div>
+                    <label for="data_inicio" class="form-label small mb-0">De</label>
+                    <input type="date" id="data_inicio" name="data_inicio" class="form-control form-control-sm" value="{{ data_inicio|default:'' }}">
                 </div>
+                <div>
+                    <label for="data_fim" class="form-label small mb-0">Até</label>
+                    <input type="date" id="data_fim" name="data_fim" class="form-control form-control-sm" value="{{ data_fim|default:'' }}">
+                </div>
+            </div>
 
-                <!-- Botão de Filtrar -->
-                <div class="align-self-end">
-                    <button type="submit" class="btn btn-primary btn-sm">
-                        <i class="bi bi-filter me-1"></i> Filtrar
-                    </button>
-                </div>
+            <!-- Botão de Filtrar -->
+            <div class="align-self-end">
+                <button type="submit" class="btn btn-primary btn-sm">
+                    <i class="bi bi-filter me-1"></i> Filtrar
+                </button>
             </div>
         </form>
     </div>
@@ -73,6 +84,8 @@
               <th scope="col">Local de Destino</th>
               <th scope="col">Data da Movimentação</th>
               <th scope="col">Usuário Responsável</th>
+              <th scope="col">Observação</th> {# Adiciona coluna de Observação #}
+              <th scope="col" class="text-center">Ações</th> {# Adiciona coluna de Ações #}
             </tr>
           </thead>
           <tbody>
@@ -84,11 +97,29 @@
               <td>{{ movimentacao.local_destino.nome|default:"N/A" }}</td>
               <td>{{ movimentacao.data_movimentacao|date:"d/m/Y H:i" }}</td>
               <td>{{ movimentacao.usuario.username|default:"Sistema" }}</td>
+              <td>{{ movimentacao.observacao|default:"N/A" }}</td> {# Exibe a Observação #}
+              <td class="text-center">
+                <button type="button" class="btn btn-sm btn-outline-secondary btn-edit-movimentacao" 
+                        data-bs-toggle="modal" data-bs-target="#modal-edit-movimentacao" 
+                        data-id="{{ movimentacao.pk }}"
+                        data-observacao="{{ movimentacao.observacao|default:'' }}"
+                        data-equipamento-nome="{{ movimentacao.equipamento.nome_equipamento|default:'N/A' }}"
+                        title="Editar Observação">
+                    <i class="bi bi-pencil-square"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger btn-delete-movimentacao" 
+                        data-bs-toggle="modal" data-bs-target="#modal-delete-movimentacao" 
+                        data-id="{{ movimentacao.pk }}"
+                        data-equipamento-nome="{{ movimentacao.equipamento.nome_equipamento|default:'N/A' }}"
+                        title="Excluir Movimentação">
+                    <i class="bi bi-trash3"></i>
+                </button>
+              </td>
             </tr>
             {% empty %}
             <!-- MENSAGEM PARA QUANDO A TABELA ESTIVER VAZIA -->
             <tr>
-                <td colspan="6" class="text-center py-5">
+                <td colspan="8" class="text-center py-5">
                     <p class="mb-0">Nenhum histórico de movimentação encontrado para os filtros selecionados.</p>
                 </td>
             </tr>
@@ -100,4 +131,120 @@
   </div>
 </main>
 
+<!-- MODAL PARA REGISTRAR NOVA MOVIMENTAÇÃO -->
+<div class="modal fade" id="modal-nova-movimentacao" tabindex="-1" aria-labelledby="modal-nova-movimentacao-label" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modal-nova-movimentacao-label">Registrar Nova Movimentação</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body">
+        <form class="row g-3" id="form-nova-movimentacao" method="POST" action="{% url 'perform_movimentacao' %}">
+          {% csrf_token %}
+          <div class="col-12">
+            <div class="mb-3">
+              <label for="equipamento-select" class="form-label">Equipamento</label>
+              <select class="form-select" required id="equipamento-select" name="equipamento">
+                <option value="" selected disabled>Selecione um equipamento</option>
+                {# Populado via JS #}
+                {% for eq in equipamentos_disponiveis %}
+                  <option value="{{ eq.pk }}" data-local-atual-id="{{ eq.local.pk|default:'' }}">
+                    {{ eq.nome_equipamento }} (Patr: {{ eq.patrimonio|default:'N/A' }}) - Local Atual: {{ eq.local.nome|default:'N/A' }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="mb-3">
+              <label for="local-origem-display" class="form-label">Local de Origem (Atual)</label>
+              <input type="text" class="form-control" id="local-origem-display" readonly disabled placeholder="Selecione um equipamento para ver o local de origem">
+              {# Hidden input para enviar o ID do local de origem se necessário (não usado na lógica atual pois pegamos da FK) #}
+              <input type="hidden" id="local-origem-id-hidden" name="local_origem_id"> 
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="mb-3">
+              <label for="local-destino-select" class="form-label">Local de Destino</label>
+              <select class="form-select" required id="local-destino-select" name="local_destino">
+                <option value="" selected disabled>Selecione o local de destino</option>
+                {# Populado via JS #}
+                {% for local in locais_disponiveis %}
+                  <option value="{{ local.pk }}">{{ local.nome }} ({{ local.cidade.nome }} - {{ local.cidade.regiao.nome }})</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="mb-3">
+              <label for="observacao-nova-movimentacao" class="form-label">Observação (Opcional)</label>
+              <textarea class="form-control" id="observacao-nova-movimentacao" name="observacao" rows="3" placeholder="Detalhes sobre a movimentação..."></textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" form="form-nova-movimentacao" class="btn btn-primary">Registrar Movimentação</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PARA EDITAR MOVIMENTAÇÃO (APENAS OBSERVAÇÃO) -->
+<div class="modal fade" id="modal-edit-movimentacao" tabindex="-1" aria-labelledby="modal-edit-movimentacao-label" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal-edit-movimentacao-label">Editar Movimentação</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="form-edit-movimentacao" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="movimentacao_id" id="edit-movimentacao-id">
+          <p>Editando observação para a movimentação do equipamento: <strong id="edit-movimentacao-equipamento-nome"></strong></p>
+          <div class="mb-3">
+            <label for="edit-observacao" class="form-label">Observação</label>
+            <textarea class="form-control" id="edit-observacao" name="observacao" rows="4"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" form="form-edit-movimentacao" class="btn btn-primary">Salvar Alterações</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DE CONFIRMAÇÃO DE EXCLUSÃO DE MOVIMENTAÇÃO -->
+<div class="modal fade" id="modal-delete-movimentacao" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmar Exclusão</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>Você tem certeza que deseja excluir permanentemente esta movimentação do equipamento:</p>
+        <p class="fw-bold text-center fs-5" id="delete-movimentacao-equipamento-nome"></p>
+        <p class="text-danger small">Atenção: Esta ação não pode ser desfeita e removerá o registro do histórico.</p>
+      </div>
+      <div class="modal-footer">
+        <form id="form-delete-movimentacao" method="POST" class="w-100">
+            {% csrf_token %}
+            <div class="d-flex justify-content-end">
+                <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-danger">Sim, Excluir</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
+
+

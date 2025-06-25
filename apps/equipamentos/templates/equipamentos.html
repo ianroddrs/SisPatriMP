@@ -23,6 +23,7 @@
       <li class="nav-item">
         <a class="nav-link active" aria-current="page" href="#">Todos</a>
       </li>
+      {# Adicione abas dinâmicas ou estáticas conforme a necessidade #}
       <li class="nav-item">
         <a class="nav-link" href="#"><i class="bi bi-pc me-1"></i>Computadores</a>
       </li>
@@ -38,23 +39,33 @@
     </ul>
   </div>
 
+  <!-- Exibir mensagens do Django (sucesso, erro, etc.) -->
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+
   <!-- CARD PARA CONTER AS AÇÕES E A TABELA DE DADOS -->
   <div class="card shadow-sm">
     <!-- CABEÇALHO DO CARD COM AÇÕES PRINCIPAIS -->
     <div class="card-header bg-light d-flex flex-wrap align-items-center justify-content-between gap-2">
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-form">
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-equipamento" data-mode="add">
         <i class="bi bi-plus-lg me-1"></i>
         Adicionar Equipamento
       </button>
 
       <!-- BOTÕES DE FILTRO E EXIBIÇÃO -->
       <div class="d-flex align-items-center gap-2">
-        <div class="input-group">
-          <input type="text" class="form-control" placeholder="Pesquisar local...">
-          <button class="btn btn-outline-secondary" type="button">
+        <form method="GET" action="{% url 'equipamentos' %}" class="input-group">
+          <input type="text" class="form-control" placeholder="Pesquisar equipamento..." name="q" value="{{ search_query }}">
+          <button class="btn btn-outline-secondary" type="submit">
             <i class="bi bi-search"></i>
           </button>
-        </div>
+        </form>
         <div class="dropdown">
           <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-three-dots-vertical"></i>
@@ -91,31 +102,65 @@
               <th scope="col">MAC</th>
               <th scope="col">Observação</th>
               <th scope="col">Última Movimentação</th>
+              <th scope="col" class="text-center">Ações</th> {# Nova coluna para ações #}
             </tr>
           </thead>
           <tbody>
             {% for equipamento in equipamentos %}
             <tr>
-              <td>{{ equipamento.local.cidade.regiao }}</td>
-              <td>{{ equipamento.local.cidade.nome }}</td>
-              <td>{{ equipamento.local.nome }}</td>
-              <td>{{ equipamento.tipo }}</td>
-              <td>{{ equipamento.patrimonio }}</td>
-              <td>{{ equipamento.nome_equipamento }}</td>
-              <td>{{ equipamento.descricao }}</td>
-              <td>{{ equipamento.fabricante }}</td>
-              <td>{{ equipamento.mac }}</td>
-              <td>{{ equipamento.observacao }}</td>
-              <td>{{ equipamento.historico_movimentacao.all.last.data_movimentacao|date:"d/m/Y H:s" }}</td>
+              <td>{{ equipamento.local.cidade.regiao.nome|default:"N/A" }}</td>
+              <td>{{ equipamento.local.cidade.nome|default:"N/A" }}</td>
+              <td>{{ equipamento.local.nome|default:"N/A" }}</td>
+              <td>{{ equipamento.tipo.tipo|default:"N/A" }}</td>
+              <td><span class="badge bg-secondary">{{ equipamento.patrimonio|default:"N/A" }}</span></td>
+              <td>{{ equipamento.nome_equipamento|default:"N/A" }}</td>
+              <td>{{ equipamento.descricao|default:"N/A" }}</td>
+              <td>{{ equipamento.fabricante.fabricante|default:"N/A" }}</td>
+              <td>{{ equipamento.mac|default:"N/A" }}</td>
+              <td>{{ equipamento.observacao|default:"N/A" }}</td>
+              <td>
+                {# INÍCIO DA CORREÇÃO #}
+                {% if equipamento.historico_movimentacao.exists %}
+                  {{ equipamento.historico_movimentacao.all.last.data_movimentacao|date:"d/m/Y H:i" }}
+                {% else %}
+                  N/A
+                {% endif %}
+                {# FIM DA CORREÇÃO #}
+              </td>
+              <td class="text-center">
+                <button type="button" class="btn btn-sm btn-outline-secondary btn-edit-equipamento" 
+                        data-bs-toggle="modal" data-bs-target="#modal-equipamento" 
+                        data-mode="edit"
+                        data-id="{{ equipamento.pk }}"
+                        data-local-id="{{ equipamento.local.pk }}"
+                        data-cidade-id="{{ equipamento.local.cidade.pk }}"
+                        data-tipo-id="{{ equipamento.tipo.pk }}"
+                        data-fabricante-id="{{ equipamento.fabricante.pk }}"
+                        data-nome="{{ equipamento.nome_equipamento }}"
+                        data-descricao="{{ equipamento.descricao }}"
+                        data-mac="{{ equipamento.mac }}"
+                        data-patrimonio="{{ equipamento.patrimonio }}"
+                        data-observacao="{{ equipamento.observacao }}"
+                        title="Editar Equipamento">
+                    <i class="bi bi-pencil-square"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger btn-delete-equipamento" 
+                        data-bs-toggle="modal" data-bs-target="#modal-delete-equipamento" 
+                        data-id="{{ equipamento.pk }}"
+                        data-nome="{{ equipamento.nome_equipamento }}"
+                        title="Excluir Equipamento">
+                    <i class="bi bi-trash3"></i>
+                </button>
+              </td>
             </tr>
             {% empty %}
             <!-- MENSAGEM PARA QUANDO A TABELA ESTIVER VAZIA -->
             <tr>
-                <td colspan="11" class="text-center py-5">
+                <td colspan="12" class="text-center py-5"> {# Colspan ajustado #}
                     <p class="mb-2">Nenhum equipamento encontrado.</p>
-                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal-form">
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal-equipamento" data-mode="add">
                         <i class="bi bi-plus-lg me-1"></i>
-                        Adicionar
+                        Adicionar o primeiro
                     </button>
                 </td>
             </tr>
@@ -128,28 +173,29 @@
 </main>
 
 <!-- MODAL PARA ADICIONAR/EDITAR EQUIPAMENTO -->
-<div class="modal fade" id="modal-form" tabindex="-1" aria-labelledby="modal-form-label" aria-hidden="true">
+<div class="modal fade" id="modal-equipamento" tabindex="-1" aria-labelledby="modal-equipamento-label" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="modal-form-label">Cadastrar Equipamento</h1>
+        <h1 class="modal-title fs-5" id="modal-equipamento-label">Cadastrar Equipamento</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
       </div>
       <div class="modal-body">
-        <!-- O formulário foi movido para fora do modal-body para usar o modal-footer para os botões -->
-        <form class="row g-3" id="equipamento-form" action="{% url 'create_equipamento' %}" method="POST">
+        <form class="row g-3" id="equipamento-form" method="POST">
           {% csrf_token %} {# Adicionar CSRF token para segurança #}
+          <input type="hidden" name="equipamento_id" id="equipamento_id"> {# Campo oculto para o ID do equipamento (edição) #}
 
           <!-- Coluna da Esquerda -->
           <div class="col-lg-6 col-12">
             <div class="mb-3">
-              <label for="cidades" class="form-label">Cidade</label>
-              <select class="form-select" required id="cidades" name="cidade">
+              <label for="cidade" class="form-label">Cidade</label>
+              <select class="form-select" required id="cidade" name="cidade">
                 <option value="" selected disabled>Selecione a cidade</option>
-                {% for regiao, cidades in cidades_regiao.items %}
-                  <optgroup label="{{ regiao }}">
-                    {% for cidade in cidades %}
-                      <option value="{{ cidade }}">{{ cidade }}</option>
+                {# Populado via JS ou Django, se preferir estático #}
+                {% for regiao_data in cidades_regiao %}
+                  <optgroup label="{{ regiao_data.regiao }}">
+                    {% for cidade_data in regiao_data.cidades %}
+                      <option value="{{ cidade_data.id }}">{{ cidade_data.nome }}</option>
                     {% endfor %}
                   </optgroup>
                 {% endfor %}
@@ -157,9 +203,10 @@
             </div>
 
             <div class="mb-3">
-              <label for="locais" class="form-label">Local</label>
-              <select class="form-select" required id="locais" name="local">
+              <label for="local" class="form-label">Local</label>
+              <select class="form-select" required id="local" name="local">
                 <option value="" selected disabled>Primeiro, selecione a cidade</option>
+                {# Populado via JS #}
               </select>
             </div>
 
@@ -172,16 +219,22 @@
           <!-- Coluna da Direita -->
           <div class="col-lg-6 col-12">
             <div class="mb-3">
-              <label for="tipo_equipamentos" class="form-label">Tipo de Equipamento</label>
-              <select class="form-select" required id="tipo_equipamentos" name="tipo_equipamento">
+              <label for="tipo_equipamento" class="form-label">Tipo de Equipamento</label>
+              <select class="form-select" required id="tipo_equipamento" name="tipo_equipamento">
                 <option value="" selected disabled>Selecione o tipo</option>
+                {% for tipo in tipos_equipamento %}
+                    <option value="{{ tipo.tipo }}">{{ tipo.tipo }}</option>
+                {% endfor %}
               </select>
             </div>
 
             <div class="mb-3">
-              <label for="fabricantes" class="form-label">Fabricante</label>
-              <select class="form-select" required id="fabricantes" name="fabricante">
+              <label for="fabricante" class="form-label">Fabricante</label>
+              <select class="form-select" required id="fabricante" name="fabricante">
                 <option value="" selected disabled>Selecione o fabricante</option>
+                {% for fab in fabricantes %}
+                    <option value="{{ fab.fabricante }}">{{ fab.fabricante }}</option>
+                {% endfor %}
               </select>
             </div>
 
@@ -209,10 +262,36 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-        {# O botão agora submete o form com id 'equipamento-form' #}
-        <button type="submit" form="equipamento-form" class="btn btn-primary">Salvar Equipamento</button>
+        <button type="submit" form="equipamento-form" class="btn btn-primary" id="btn-salvar-equipamento">Salvar Equipamento</button>
       </div>
     </div>
   </div>
 </div>
+
+<!-- MODAL DE CONFIRMAÇÃO DE EXCLUSÃO DE EQUIPAMENTO -->
+<div class="modal fade" id="modal-delete-equipamento" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmar Exclusão</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>Você tem certeza que deseja excluir permanentemente o equipamento:</p>
+        <p class="fw-bold text-center fs-5" id="delete-equipamento-nome"></p>
+        <p class="text-danger small">Atenção: Esta ação não pode ser desfeita. O histórico de movimentação relacionado a este equipamento também será removido.</p>
+      </div>
+      <div class="modal-footer">
+        <form id="delete-equipamento-form" method="POST" class="w-100">
+            {% csrf_token %}
+            <div class="d-flex justify-content-end">
+                <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-danger">Sim, Excluir</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
