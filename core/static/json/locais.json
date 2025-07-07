@@ -1,0 +1,184 @@
+{
+    "Ananindeua": [
+        {
+            "local": "1ª PJ Cível",
+            "descricao": "Drª. Vania campos de pinho"
+        },
+        {
+            "local": "1ª PJ Constitucional",
+            "descricao": "Dr. Laercio Guilhermino de Abreu"
+        },
+        {
+            "local": "1ª PJ Criminal",
+            "descricao": "Dr. Paulo Ricardo de Souza Bezerra"
+        },
+        {
+            "local": "1ª PJ da Mulher",
+            "descricao": "Dr. Bruno Beckembauer Sanches Damasceno"
+        },
+        {
+            "local": "1ª PJ do Juri",
+            "descricao": "Dr. Marcio de Almeida Farias"
+        },
+        {
+            "local": "1ª PJ Infancia",
+            "descricao": "Dr.ª Priscila Tereza de Araújo Costa Moreira"
+        },
+        {
+            "local": "1ª PJ meio ambiente",
+            "descricao": "Dr. Quintino Farias da Costa Junior"
+        },
+        {
+            "local": "2ª PJ Cível",
+            "descricao": "Drª. Alessandra Rabelo Clos"
+        },
+        {
+            "local": "2ª PJ Constitucional",
+            "descricao": "Drª. Dr. Laercio Guilhermino de Abreu"
+        },
+        {
+            "local": "2ª PJ Criminal",
+            "descricao": "Dr.ª Hygea Valente Morgado"
+        },
+        {
+            "local": "2ª PJ da mulher",
+            "descricao": "Dr.ª Lizete de Lima Nascimento"
+        },
+        {
+            "local": "2ª PJ Infância",
+            "descricao": "Dr. Eduardo  José Falesi do Nascimento"
+        },
+        {
+            "local": "2ª PJ juri",
+            "descricao": "Dr. Marcio de Almeida Farias"
+        },
+        {
+            "local": "2ª PJ Meio Ambiente",
+            "descricao": "Dr. Quintino Farias da Costa Junior"
+        },
+        {
+            "local": "3ª PJ Cível",
+            "descricao": "Dr. Evandro de Aguiar Ribeiro"
+        },
+        {
+            "local": "3ª PJ Criminal",
+            "descricao": "Dr.ª Ana Carolina Vilhena Gonçalves"
+        },
+        {
+            "local": "3ª PJ Infância",
+            "descricao": "Dr.ª Lea Cristina Mouzinho da Rocha"
+        },
+        {
+            "local": "4ª PJ Criminal",
+            "descricao": "Dr. Paulo Arias Carvalho Cruz"
+        },
+        {
+            "local": "4ª PJ Infância",
+            "descricao": "Dr.ª Vyllya Costa Barra Sereni"
+        },
+        {
+            "local": "5ª PJ Criminal - JECRIM",
+            "descricao": "Dr.ª Lilian Nunes e Nunes"
+        },
+        {
+            "local": "apoio 1ª e 2ª PJ Constitucional",
+            "descricao": ""
+        },
+        {
+            "local": "apoio 1ª e 2ª PJ Meio Ambiente",
+            "descricao": ""
+        },
+        {
+            "local": "apoio 1ª e 2ª PJ cível",
+            "descricao": ""
+        },
+        {
+            "local": "apoio 3ª PJ Cível",
+            "descricao": ""
+        },
+        {
+            "local": "apoio das PJ Civeis",
+            "descricao": ""
+        },
+        {
+            "local": "apoio das PJ do juri",
+            "descricao": ""
+        },
+        {
+            "local": "Apoio das PJ da Infância",
+            "descricao": ""
+        },
+        {
+            "local": "apoio PJ Criminal",
+            "descricao": ""
+        },
+        {
+            "local": "chefia de apoio",
+            "descricao": ""
+        },
+        {
+            "local": "informatica",
+            "descricao": ""
+        },
+        {
+            "local": "Psicologia",
+            "descricao": ""
+        },
+        {
+            "local": "recepção",
+            "descricao": ""
+        },
+        {
+            "local": "sala 76",
+            "descricao": ""
+        },
+        {
+            "local": "Sala de Espera Infância",
+            "descricao": ""
+        },
+        {
+            "local": "Sala de Monitoramento",
+            "descricao": ""
+        },
+        {
+            "local": "sala de rack infancia",
+            "descricao": ""
+        },
+        {
+            "local": "sala de rack principal",
+            "descricao": ""
+        },
+        {
+            "local": "Sala do Plantão",
+            "descricao": ""
+        },
+        {
+            "local": "Sala dos Motoristas",
+            "descricao": ""
+        },
+        {
+            "local": "Sala dos Oficiais",
+            "descricao": ""
+        },
+        {
+            "local": "Sala Multiuso",
+            "descricao": ""
+        },
+        {
+            "local": "Sala Multiuso 3",
+            "descricao": ""
+        },
+        {
+            "local": "Serviço Social 1",
+            "descricao": ""
+        },
+        {
+            "local": "Serviço Social 2",
+            "descricao": ""
+        },
+        {
+            "local": "telefonia",
+            "descricao": ""
+        }
+    ]
+}

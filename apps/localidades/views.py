@@ -29,9 +29,6 @@ class LocalidadesView(View):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        """
-        Método POST: Cria uma nova localidade.
-        """
         cidade_id = request.POST.get('cidade')
         local_nome = request.POST.get('nome_local')
         local_descricao = request.POST.get('descricao', '')
