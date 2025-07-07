@@ -16,9 +16,8 @@ def movimentacoes(request):
         'local_origem',
         'local_destino',
         'usuario'
-    ).order_by('-data_movimentacao') # Ordena do mais novo para o mais antigo
+    ).order_by('-data_movimentacao')
 
-    # Filtros
     equipamento_search = request.GET.get('equipamento_search')
     data_inicio = request.GET.get('data_inicio')
     data_fim = request.GET.get('data_fim')
@@ -33,11 +32,9 @@ def movimentacoes(request):
         historico = historico.filter(data_movimentacao__gte=data_inicio)
     
     if data_fim:
-        # Adiciona um dia para incluir a data final no filtro
         data_fim_obj = datetime.strptime(data_fim, '%Y-%m-%d')
         historico = historico.filter(data_movimentacao__lte=data_fim_obj + timedelta(days=1))
 
-    # Dados para os selects dos modais
     equipamentos_disponiveis = Equipamento.objects.select_related('local').all().order_by('nome_equipamento')
     locais_disponiveis = Local.objects.select_related('cidade__regiao').all().order_by('nome')
 
@@ -53,10 +50,6 @@ def movimentacoes(request):
 
 @require_POST
 def perform_movimentacao(request):
-    """
-    Realiza uma nova movimentação de equipamento, criando um novo registro no histórico.
-    Atualiza também o local atual do equipamento.
-    """
     try:
         equipamento_id = request.POST.get('equipamento')
         local_destino_id = request.POST.get('local_destino')
@@ -68,17 +61,15 @@ def perform_movimentacao(request):
 
         equipamento = get_object_or_404(Equipamento, pk=equipamento_id)
         local_destino = get_object_or_404(Local, pk=local_destino_id)
-        local_origem = equipamento.local # O local atual do equipamento é a origem
+        local_origem = equipamento.local
 
         if local_origem == local_destino:
             messages.warning(request, 'O local de destino é o mesmo que o local de origem. Nenhuma movimentação registrada.')
             return redirect('movimentacao')
 
-        # Atualiza o local do equipamento
         equipamento.local = local_destino
         equipamento.save()
 
-        # Cria o registro no histórico de movimentação
         HistoricoMovimentacao.objects.create(
             equipamento=equipamento,
             local_origem=local_origem,
@@ -95,10 +86,6 @@ def perform_movimentacao(request):
 
 @require_POST
 def update_movimentacao(request, pk):
-    """
-    Atualiza a observação de um registro de movimentação existente.
-    Não permite alterar equipamento, origem ou destino de uma movimentação passada.
-    """
     movimentacao = get_object_or_404(HistoricoMovimentacao, pk=pk)
     try:
         nova_observacao = request.POST.get('observacao', '')
@@ -113,9 +100,6 @@ def update_movimentacao(request, pk):
 
 @require_POST
 def delete_movimentacao(request, pk):
-    """
-    Deleta um registro de movimentação do histórico.
-    """
     movimentacao = get_object_or_404(HistoricoMovimentacao, pk=pk)
     equipamento_nome = movimentacao.equipamento.nome_equipamento
     try:
@@ -126,11 +110,7 @@ def delete_movimentacao(request, pk):
     
     return redirect('movimentacao')
 
-# APIs para preenchimento dinâmico de selects (AJAX)
 def api_equipamentos_for_movimentacao(request):
-    """
-    Retorna uma lista de equipamentos com seu local atual para preenchimento de select.
-    """
     equipamentos_data = Equipamento.objects.select_related('local', 'local__cidade').all().order_by('nome_equipamento')
     result = [
         {
@@ -145,9 +125,6 @@ def api_equipamentos_for_movimentacao(request):
     return JsonResponse(result, safe=False)
 
 def api_locais_for_movimentacao(request):
-    """
-    Retorna uma lista de locais para preenchimento de select.
-    """
     locais_data = Local.objects.select_related('cidade__regiao').all().order_by('nome')
     result = [
         {

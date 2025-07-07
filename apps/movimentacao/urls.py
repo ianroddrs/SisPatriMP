@@ -7,7 +7,6 @@ urlpatterns = [
     path('update_movimentacao/<int:pk>/', views.update_movimentacao, name='update_movimentacao'),
     path('delete_movimentacao/<int:pk>/', views.delete_movimentacao, name='delete_movimentacao'),
 
-    # APIs para preenchimento de selects via AJAX
     path('api/movimentacao/equipamentos/', views.api_equipamentos_for_movimentacao, name='api_equipamentos_for_movimentacao'),
     path('api/movimentacao/locais/', views.api_locais_for_movimentacao, name='api_locais_for_movimentacao'),
 ]
