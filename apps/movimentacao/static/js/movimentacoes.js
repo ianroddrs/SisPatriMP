@@ -1,5 +1,3 @@
-// static/js/movimentacoes.js
-
 document.addEventListener('DOMContentLoaded', () => {
     // === Elementos do Modal de Nova Movimentação ===
     const modalNovaMovimentacao = document.getElementById('modal-nova-movimentacao');
@@ -26,30 +24,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // === Lógica para o Modal de Nova Movimentação ===
     modalNovaMovimentacao.addEventListener('show.bs.modal', async () => {
-        // Limpa o formulário ao abrir o modal para nova movimentação
         formNovaMovimentacao.reset();
         localOrigemDisplay.value = 'Selecione um equipamento para ver o local de origem';
-        // Equipamento e Local de Destino são populados pelo Django context, mas se fosse AJAX:
         // await populateEquipamentosAndLocais(); 
     });
 
     equipamentoSelect.addEventListener('change', () => {
         const selectedOption = equipamentoSelect.options[equipamentoSelect.selectedIndex];
         const localAtualId = selectedOption.getAttribute('data-local-atual-id');
-        const localAtualNome = selectedOption.textContent.split('Local Atual: ')[1]; // Pega o nome do local atual da opção
+        const localAtualNome = selectedOption.textContent.split('Local Atual: ')[1];
         
-        localOrigemDisplay.value = localAtualNome; // Exibe o local de origem
-        // localOrigemIdHidden.value = localAtualId; // Se fosse enviar o ID da origem explicitamente
+        localOrigemDisplay.value = localAtualNome; 
+        // localOrigemIdHidden.value = localAtualId;
     });
 
     formNovaMovimentacao.addEventListener('submit', async (event) => {
-        event.preventDefault(); // Impede o envio padrão
+        event.preventDefault();
 
         const url = formNovaMovimentacao.action;
         const formData = new FormData(formNovaMovimentacao);
 
         try {
-            // Submete o formulário normalmente para que o Django trate o redirecionamento e as mensagens
             formNovaMovimentacao.submit();
         } catch (error) {
             console.error('Erro ao registrar nova movimentação:', error);
@@ -67,17 +62,17 @@ document.addEventListener('DOMContentLoaded', () => {
         editMovimentacaoIdInput.value = movimentacaoId;
         editObservacaoInput.value = observacao;
         editMovimentacaoEquipamentoNomeSpan.textContent = equipamentoNome;
-        formEditMovimentacao.action = `/movimentacao/update_movimentacao/${movimentacaoId}/`; // Define a URL da action
+        formEditMovimentacao.action = `/movimentacao/update_movimentacao/${movimentacaoId}/`; 
     });
 
     formEditMovimentacao.addEventListener('submit', async (event) => {
-        event.preventDefault(); // Impede o envio padrão
+        event.preventDefault(); 
 
         const url = formEditMovimentacao.action;
         const formData = new FormData(formEditMovimentacao);
 
         try {
-            formEditMovimentacao.submit(); // Submete o formulário normalmente
+            formEditMovimentacao.submit(); 
         } catch (error) {
             console.error('Erro ao atualizar movimentação:', error);
             window.dataManager.showAlert('Erro ao atualizar movimentação. Tente novamente.', 'danger');
@@ -91,24 +86,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const equipamentoNome = button.getAttribute('data-equipamento-nome');
 
         deleteMovimentacaoEquipamentoNomeSpan.textContent = `"${equipamentoNome}"`;
-        formDeleteMovimentacao.action = `/movimentacao/delete_movimentacao/${movimentacaoId}/`; // Define a URL da action
+        formDeleteMovimentacao.action = `/movimentacao/delete_movimentacao/${movimentacaoId}/`; 
     });
 
     formDeleteMovimentacao.addEventListener('submit', async (event) => {
-        event.preventDefault(); // Impede o envio padrão
+        event.preventDefault();
 
         const url = formDeleteMovimentacao.action;
         const formData = new FormData(formDeleteMovimentacao);
 
         try {
-            formDeleteMovimentacao.submit(); // Submete o formulário normalmente
+            formDeleteMovimentacao.submit();
         } catch (error) {
             console.error('Erro ao excluir movimentação:', error);
             window.dataManager.showAlert('Erro ao excluir movimentação. Tente novamente.', 'danger');
         }
     });
 
-    // Função para popular dinamicamente os selects (se necessário no futuro, atualmente usamos Django context)
     /*
     async function populateEquipamentosAndLocais() {
         try {

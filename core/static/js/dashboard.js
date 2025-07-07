@@ -1,14 +1,11 @@
-// static/js/dashboard.js
 
 document.addEventListener("DOMContentLoaded", async () => {
-    // Certifique-se de que a instância de DataManager está disponível
     if (typeof window.dataManager === 'undefined') {
         console.error('DataManager is not defined. Ensure main.js is loaded before dashboard.js');
         return;
     }
 
     try {
-        // Busca os dados do backend via API
         const chartData = await window.dataManager.request('/api/dashboard_charts/');
 
         // --- Gráfico 1: Equipamentos por Local (Barras) ---
@@ -138,7 +135,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             yaxis: {
                 title: { text: 'Nº de Movimentações' },
                 min: 0,
-                tickAmount: 5 // Para ter ticks inteiros
+                tickAmount: 5
             },
             tooltip: {
                 x: {

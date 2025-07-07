@@ -1,5 +1,3 @@
-// static/js/equipamentos.js
-
 document.addEventListener('DOMContentLoaded', () => {
     const modalEquipamento = document.getElementById('modal-equipamento');
     const equipamentoForm = document.getElementById('equipamento-form');
@@ -134,9 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Popula os selects de Tipo de Equipamento e Fabricante na carga da página
-    // (Pode ser feito via Django context, como já está no template, ou via AJAX se necessário)
-    // Exemplo para popular via AJAX (se não viesse do contexto do Django):
     /*
     const populateSelects = async () => {
         try {
