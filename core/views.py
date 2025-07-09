@@ -4,57 +4,88 @@ from django.db.models import Count, Sum
 from django.db.models.functions import TruncMonth
 from django.utils import timezone
 import datetime
+import json
+from django.db.models import Q
 
-from core.models import Equipamento, Local, HistoricoMovimentacao, TipoEquipamento, FabricanteEquipamento
+from core.models import Regioes, Cidade, Local, HistoricoMovimentacao, Equipamento, TipoEquipamento, FabricanteEquipamento
 
 def home(request):
-    """
-    View para o dashboard, coletando dados reais do banco de dados.
-    """
-    # --- KPIs (Key Performance Indicators) ---
+
+    if request.GET.get('action') == 'populate_db':
+        regioes_path = 'core/static/json/regioes.json'
+        with open(regioes_path, 'r', encoding='utf-8') as file:
+            regioes_data = json.load(file)
+            for regiao, cidades in regioes_data.items():
+                regiao, _ = Regioes.objects.get_or_create(nome=regiao)
+                for cidade in cidades:
+                    Cidade.objects.get_or_create(
+                        nome=cidade,
+                        regiao=regiao
+                    )
+
+        locais_path = 'core/static/json/locais.json'
+        with open(locais_path, 'r', encoding='utf-8') as file:
+            locais_data = json.load(file)
+            for cidade, locais in locais_data.items():
+                for local in locais:
+                    nome = local['local']
+                    descricao = local['descricao']
+
+                    cidade_obj, _ = Cidade.objects.get_or_create(nome=cidade)
+                    Local.objects.get_or_create(
+                        nome=nome,
+                        cidade=cidade_obj,
+                        descricao=descricao
+                    )
+
+        equipamentos_path = 'core/static/json/equipamentos.json'
+        with open(equipamentos_path, 'r', encoding='utf-8') as file:
+            equipamentos_data = json.load(file)
+            for equipamento in equipamentos_data:
+                patrimonio = equipamento['patrimonio']
+                tipo_nome = equipamento['tipo']
+                marca_nome = equipamento['marca']
+                local_nome = equipamento['local']
+
+                tipo_obj, _ = TipoEquipamento.objects.get_or_create(tipo=tipo_nome)
+                fabricante_obj, _ = FabricanteEquipamento.objects.get_or_create(fabricante=marca_nome)
+                local_obj = Local.objects.get(nome=local_nome)
+
+                Equipamento.objects.get_or_create(
+                    patrimonio=patrimonio,
+                    tipo=tipo_obj,
+                    fabricante=fabricante_obj,
+                    local=local_obj,
+                )
+
+
     total_equipamentos = Equipamento.objects.count()
     total_locais = Local.objects.count()
-
-    # Movimentações no último mês
-    # Calcula a data de 30 dias atrás a partir de agora
     data_30_dias_atras = timezone.now() - datetime.timedelta(days=30)
     movimentacoes_ultimo_mes = HistoricoMovimentacao.objects.filter(
         data_movimentacao__gte=data_30_dias_atras
     ).count()
-
-    # Itens em Alerta (exemplo: equipamentos sem observação ou com observação específica 'Alerta')
-    # Esta é uma métrica de exemplo e pode ser ajustada conforme a definição de "alerta"
-    # Aqui, consideramos que um equipamento está em alerta se a observação contiver a palavra "alerta"
-    # ou se for nula (indicando que talvez precise de revisão).
     itens_em_alerta = Equipamento.objects.filter(
         Q(observacao__icontains='alerta') | Q(observacao__isnull=True) | Q(observacao__exact='')
     ).count()
-
-    # --- Dados para os Gráficos ---
-
-    # Gráfico 1: Equipamentos por Local (Top N locais)
-    # Agrupa equipamentos por local e conta a quantidade. Limita aos 10 primeiros para clareza no gráfico.
     equipamentos_por_local = Equipamento.objects.values('local__nome') \
                                               .annotate(quantidade=Count('id')) \
                                               .order_by('-quantidade')[:10]
     labels_local = [item['local__nome'] for item in equipamentos_por_local]
     series_local = [item['quantidade'] for item in equipamentos_por_local]
 
-    # Gráfico 2: Equipamentos por Tipo
     equipamentos_por_tipo = Equipamento.objects.values('tipo__tipo') \
                                                .annotate(quantidade=Count('id')) \
                                                .order_by('-quantidade')
     labels_tipo = [item['tipo__tipo'] for item in equipamentos_por_tipo]
     series_tipo = [item['quantidade'] for item in equipamentos_por_tipo]
 
-    # Gráfico 3: Equipamentos por Fabricante (Top N fabricantes)
     equipamentos_por_fabricante = Equipamento.objects.values('fabricante__fabricante') \
                                                      .annotate(quantidade=Count('id')) \
                                                      .order_by('-quantidade')[:10]
     labels_fabricante = [item['fabricante__fabricante'] for item in equipamentos_por_fabricante]
     series_fabricante = [item['quantidade'] for item in equipamentos_por_fabricante]
 
-    # Gráfico 4: Movimentações ao longo do tempo (últimos 6 meses)
     movimentacoes_por_mes = HistoricoMovimentacao.objects \
                                                  .annotate(mes_ano=TruncMonth('data_movimentacao')) \
                                                  .values('mes_ano') \
@@ -70,7 +101,6 @@ def home(request):
         'movimentacoes_ultimo_mes': movimentacoes_ultimo_mes,
         'itens_em_alerta': itens_em_alerta,
 
-        # Dados para os gráficos JSON (serão buscados via API no JS)
         'chart_data': json.dumps({
             'equipamentos_por_local': {'labels': labels_local, 'series': series_local},
             'equipamentos_por_tipo': {'labels': labels_tipo, 'series': series_tipo},
@@ -80,39 +110,26 @@ def home(request):
     }
     return render(request, "home.html", context)
 
-
-# --- API para dados dos gráficos (opcional, mas boa prática para dashboard dinâmico) ---
-# Se você quiser que o JS busque os dados do gráfico via AJAX, adicione estas views:
-
-import json
-from django.db.models import Q
-
 def get_dashboard_chart_data(request):
-    """
-    API que retorna os dados para os gráficos do dashboard em formato JSON.
-    """
-    # Gráfico 1: Equipamentos por Local (Top 10 locais)
+
     equipamentos_por_local = Equipamento.objects.values('local__nome') \
                                               .annotate(quantidade=Count('id')) \
                                               .order_by('-quantidade')[:10]
     labels_local = [item['local__nome'] for item in equipamentos_por_local]
     series_local = [item['quantidade'] for item in equipamentos_por_local]
 
-    # Gráfico 2: Equipamentos por Tipo
     equipamentos_por_tipo = Equipamento.objects.values('tipo__tipo') \
                                                .annotate(quantidade=Count('id')) \
                                                .order_by('-quantidade')
     labels_tipo = [item['tipo__tipo'] for item in equipamentos_por_tipo]
     series_tipo = [item['quantidade'] for item in equipamentos_por_tipo]
 
-    # Gráfico 3: Equipamentos por Fabricante (Top 10 fabricantes)
     equipamentos_por_fabricante = Equipamento.objects.values('fabricante__fabricante') \
                                                      .annotate(quantidade=Count('id')) \
                                                      .order_by('-quantidade')[:10]
     labels_fabricante = [item['fabricante__fabricante'] for item in equipamentos_por_fabricante]
     series_fabricante = [item['quantidade'] for item in equipamentos_por_fabricante]
 
-    # Gráfico 4: Movimentações ao longo do tempo (últimos 6 meses)
     movimentacoes_por_mes = HistoricoMovimentacao.objects \
                                                  .annotate(mes_ano=TruncMonth('data_movimentacao')) \
                                                  .values('mes_ano') \

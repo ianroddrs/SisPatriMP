@@ -67,7 +67,7 @@ class FabricanteEquipamento(models.Model):
 class Equipamento(models.Model):
     local = models.ForeignKey('local', on_delete=models.CASCADE, related_name='equipamentos')
     tipo = models.ForeignKey('tipoequipamento', on_delete=models.CASCADE, related_name='equipamentos')
-    nome_equipamento = models.CharField(max_length=100, unique=True)
+    nome_equipamento = models.CharField(max_length=100)
     descricao = models.CharField(max_length=100, blank=True, null=True)
     mac = models.CharField(max_length=17, blank=True, null=True, unique=True)  # Formato "00:00:00:00:00:00"
     fabricante = models.ForeignKey('fabricanteequipamento', on_delete=models.CASCADE, related_name='equipamentos')
