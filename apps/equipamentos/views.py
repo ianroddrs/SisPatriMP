@@ -151,7 +151,6 @@ def delete_equipamento(request, pk):
     return redirect('equipamentos')
 
 def get_locais_por_cidade(request):
-
     cidade_id = request.GET.get('cidade_id')
     locais = Local.objects.filter(cidade_id=cidade_id).order_by('nome').values('id', 'nome')
     return JsonResponse(list(locais), safe=False)

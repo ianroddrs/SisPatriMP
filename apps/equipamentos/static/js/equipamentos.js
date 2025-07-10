@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
             cidadeSelect.value = cidadeId;
             if (cidadeId) {
                 try {
-                    const locais = await dataManager.request(`/api/locais-por-cidade/?cidade_id=${cidadeId}`);
+                    const locais = await dataManager.request(`/equipamentos/api/locais-por-cidade/?cidade_id=${cidadeId}`);
                     localSelect.innerHTML = '<option value="" disabled>Selecione o local</option>';
                     locais.forEach(local => {
                         const option = document.createElement('option');
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (cidadeId) {
             try {
-                const locais = await dataManager.request(`/api/locais-por-cidade/?cidade_id=${cidadeId}`);
+                const locais = await dataManager.request(`/equipamentos/api/locais-por-cidade/?cidade_id=${cidadeId}`);
                 localSelect.innerHTML = '<option value="" selected disabled>Selecione o local</option>';
                 if (locais.length === 0) {
                     localSelect.innerHTML = '<option value="" selected disabled>Nenhum local encontrado para esta cidade</option>';
