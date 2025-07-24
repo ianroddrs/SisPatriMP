@@ -3489,6 +3489,12 @@
   "local": "apoio 1ª e 2ª PJ civel"
  },
  {
+  "patrimonio": 100497,
+  "tipo": "cpu",
+  "marca": "lenovo",
+  "local": "apoio 1ª e 2ª PJ civel"
+ },
+ {
   "patrimonio": 71803,
   "tipo": "monitor",
   "marca": "lg",
