@@ -6,7 +6,6 @@
 {% endblock %}
 
 {% block content %}
-<main class="container-xl py-4">
   <!-- SEÇÃO DO CABEÇALHO DA PÁGINA -->
   <div class="pb-3 mb-4 border-bottom">
     <a href="{% url 'localidades' %}" class="d-flex align-items-center text-dark text-decoration-none">
@@ -23,15 +22,6 @@
     </ul>
   </div>
 
-  <!-- Exibir mensagens do Django (sucesso, erro, etc.) -->
-  {% if messages %}
-    {% for message in messages %}
-      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    {% endfor %}
-  {% endif %}
 
   <!-- CARD PARA CONTER AS AÇÕES E A TABELA -->
   <div class="card shadow-sm">
@@ -107,7 +97,7 @@
       </div>
     </div>
   </div>
-</main>
+
 
 <!-- MODAL PARA ADICIONAR LOCAL -->
 <div class="modal fade" id="modal-add-local" tabindex="-1" aria-labelledby="modal-add-label" aria-hidden="true">

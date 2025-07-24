@@ -8,7 +8,7 @@
 
 {% block content %}
 
-<main class="container-xl py-4">
+
   <!-- SEÇÃO DO CABEÇALHO DA PÁGINA -->
   <div class="pb-3 mb-4 border-bottom">
     <a href="{% url 'movimentacao' %}" class="d-flex align-items-center text-dark text-decoration-none">
@@ -25,16 +25,6 @@
       </li>
     </ul>
   </div>
-
-  <!-- Exibir mensagens do Django (sucesso, erro, etc.) -->
-  {% if messages %}
-    {% for message in messages %}
-      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    {% endfor %}
-  {% endif %}
 
   <!-- CARD PARA CONTER OS FILTROS E A TABELA DE DADOS -->
   <div class="card shadow-sm">
@@ -129,7 +119,6 @@
       </div>
     </div>
   </div>
-</main>
 
 <!-- MODAL PARA REGISTRAR NOVA MOVIMENTAÇÃO -->
 <div class="modal fade" id="modal-nova-movimentacao" tabindex="-1" aria-labelledby="modal-nova-movimentacao-label" aria-hidden="true">
