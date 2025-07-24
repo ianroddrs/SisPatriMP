@@ -76,3 +76,15 @@ class Equipamento(models.Model):
 
     def __str__(self):
         return f"{self.tipo.tipo} - {self.nome_equipamento} ({self.patrimonio})"
+    
+# class Impressora(models.Model):
+#     local = models.ForeignKey('local', on_delete=models.CASCADE, related_name='equipamentos')
+#     fabricante = models.ForeignKey('fabricanteequipamento', on_delete=models.CASCADE, related_name='equipamentos')
+#     nome_equipamento = models.CharField(max_length=100)
+#     mac = models.CharField(max_length=17, blank=True, null=True, unique=True)  
+#     ip = models.CharField(max_length=30, null=True)
+#     # ultima_atualizacao = 
+    
+#     def __str__(self):
+#         return f"{self.tipo.tipo} - {self.nome_equipamento} ({self.patrimonio})"
+

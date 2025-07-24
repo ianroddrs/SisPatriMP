@@ -9,3 +9,6 @@ apps/localidades/__pycache__/
 apps/localidades/migrations/
 apps/movimentacao/__pycache__/
 apps/movimentacao/migrations/
+apps/impressoras/__pycache__/
+apps/impressoras/migrations/
+.vscode/launch.json

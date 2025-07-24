@@ -32,7 +32,8 @@ INSTALLED_APPS = [
     'core',
     'apps.equipamentos',
     'apps.localidades',
-    'apps.movimentacao'
+    'apps.movimentacao',
+    'apps.impressoras'
 ]
 
 MIDDLEWARE = [

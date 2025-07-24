@@ -1,0 +1,21 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block static %}
+  <script src="{% static 'js/impressoras.js' %}" defer></script>
+{% endblock %}
+
+{% block content %}
+
+    <h1>Impressoras</h1>
+    
+    <button id="startButton" class="btn btn-primary" onclick="startVerification()">Iniciar Verificação das Impressoras</button>
+    <div class="spinner" id="loadingSpinner"></div>
+    
+    <div class="results-section" id="results">
+        <h2>Resultados da Verificação:</h2>
+        <pre id="outputLog" class="h-100 bg-light rounded-4">Aguardando início da verificação...</pre>
+    </div>
+   
+
+{% endblock %}

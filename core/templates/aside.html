@@ -19,4 +19,9 @@
       <i class="bi bi-arrow-down-up me-3"></i>Movimentação
     </a>
   </li>
+  <li class="nav-item my-1 px-3">
+    <a href="{% url 'impressoras' %}" class="btn btn-dark w-100 text-start {% if request.resolver_match.url_name == 'historico' %}active{% endif %}">
+      <i class="bi bi-printer-fill me-3"></i>Impressoras
+    </a>
+  </li>
 </ul>
